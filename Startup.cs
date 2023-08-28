@@ -1,8 +1,10 @@
 using System.Text;
+using barangay_crime_complaint_api.Models;
+using barangay_crime_compliant_api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace barangay_crime_complaint_api
 {
     public class Startup
@@ -33,10 +35,10 @@ namespace barangay_crime_complaint_api
             
             //SQL SERVER CONNECTION HERE
 
-            // services.AddDbContext<axpfmContext>(option =>
-            // {
-            //     option.UseSqlServer(Configuration.GetConnectionString("axpfm"));
-            // });
+            services.AddDbContext<Thesis_CrimeContext>(option =>
+            {
+                option.UseSqlServer(Configuration.GetConnectionString("Thesis_Crime") ?? "");
+            });
 
             // services.AddDbContext<axpcmContext>(option =>
             // {
@@ -95,13 +97,8 @@ namespace barangay_crime_complaint_api
             
 
             //SERVICES
-            // services.AddTransient<IEmailService, EmailService>();
-            // services.AddTransient<IEmailTemplateService, EmailTemplateService>();
-            // services.AddTransient<IRoleService, RoleService>();
-            // services.AddTransient<ISecurityAccessService, SecurityAccessService>();
-            // services.AddTransient<ISecurityRoleAccessService, SecurityRoleAccessService>();
-            // services.AddTransient<ISmsService, SmsService>();
-            // services.AddTransient<IInvoiceReceiptService, InvoiceReceiptService>();
+            services.AddTransient<IAuthService, AuthService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -123,6 +120,7 @@ namespace barangay_crime_complaint_api
             }
 
             //app.UseHttpsRedirection();
+            //app.UseCors("allow-policy");
 
             app.UseRouting();
 
@@ -131,7 +129,7 @@ namespace barangay_crime_complaint_api
                 option.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
             });
 
-            //app.UseCors("allow-policy");
+            
 
             app.UseAuthentication();
 
