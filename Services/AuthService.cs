@@ -43,29 +43,101 @@ namespace barangay_crime_compliant_api.Services
             user.DateCreated =DateTime.UtcNow;
             user.DateUpdated =DateTime.UtcNow;
             user.UserType = item.UserType;
-            var test = db.Users.Add(user);
+            db.Users.Add(user);
             db.SaveChanges();
-             // User Claims
-                var claims = new List<Claim>
-                {
-                    new Claim("Username", item.Username.ToString()),
-                    
-                };
+            // User Claims
+            var claims = new List<Claim>
+            {
+                new Claim("Username", item.Username.ToString()),
+                
+            };
 
-                // Encrypt credentials
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            // Encrypt credentials
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
-                    configuration["Jwt:Issuer"],
-                    claims,
-                    expires: DateTime.Now.AddHours(8766), // Set to 1 year
-                    signingCredentials: credentials);
+            var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                configuration["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddHours(8766), // Set to 1 year
+                signingCredentials: credentials);
 
-                // Generate JWT
-                var token = new JwtSecurityTokenHandler().WriteToken(auth);
-                item.Token = token;
+            // Generate JWT
+            var token = new JwtSecurityTokenHandler().WriteToken(auth);
+            item.Token = token;
             return item;
+
+        }
+
+        public string CreatePersonalInfo(
+            IFormFile ValidId, IFormFile SelfieId, string Username, string Password, string FirstName, 
+            string MiddleName, string LastName, DateTime BirthDate, string Gender, string Phone, 
+            string HouseNo, string Street, string Village, string UnitFloor, string Building, 
+            string ProvinceCode, string CityCode, string BrgyCode, string ZipCode, DateTime DateCreated, 
+            string UserType
+        )
+        {
+            
+            User user = new User();
+            // user.Id = item.Id;
+            user.Username = Username;
+            user.Password = BCrypt.Net.BCrypt.HashPassword(Password);
+            user.FirstName = FirstName;
+            user.MiddleName = MiddleName;
+            user.LastName = LastName;
+            user.BirthDate = BirthDate;
+            user.Gender = Gender;
+            user.Phone = Phone;
+            user.HouseNo = HouseNo;
+            user.Street = Street;
+            user.Village = Village;
+            user.UnitFloor = UnitFloor;
+            user.Building = Building;
+            user.ProvinceCode = ProvinceCode;
+            user.CityCode = CityCode;
+            user.BrgyCode = BrgyCode;
+            user.ZipCode = ZipCode;
+            user.DateCreated =DateTime.UtcNow;
+            user.DateUpdated =DateTime.UtcNow;
+            user.UserType = UserType;
+            using (var memoryStream = new MemoryStream())
+            {
+                ValidId.CopyTo(memoryStream);
+                user.ValidId = memoryStream.ToArray();
+            }
+            using (var memoryStream = new MemoryStream())
+            {
+
+                SelfieId.CopyTo(memoryStream);
+                user.Selfie = memoryStream.ToArray();
+                
+            }
+
+            
+            db.Users.Add(user);
+            db.SaveChanges();
+            // User Claims
+            var claims = new List<Claim>
+            {
+
+                new Claim("Username", Username.ToString()),
+                
+            };
+
+            // Encrypt credentials
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                configuration["Jwt:Issuer"],
+                claims,
+                expires: DateTime.Now.AddHours(8766), // Set to 1 year
+                signingCredentials: credentials);
+
+            // Generate JWT
+            var token = new JwtSecurityTokenHandler().WriteToken(auth);
+                
+            return "Create Personal Info Created Successfully";
 
         }
 
@@ -78,31 +150,42 @@ namespace barangay_crime_compliant_api.Services
             if (user != null) 
             {
                 verified = BCrypt.Net.BCrypt.Verify(password, user.Password);
-                if(loginDto.UserType.Equals("admin")) 
-                {
-                    return "Admin Login Success";
-                } 
-                else if(loginDto.UserType.Equals("barangay")) 
+                if(verified) 
                 {
 
-                    return "Barangay Login Success";
+                    if(loginDto.UserType.Equals("admin")) 
+                    {
+                        return "Admin Login Success";
+                    } 
+                    else if(loginDto.UserType.Equals("barangay")) 
+                    {
+
+                        return "Barangay Login Success";
+
+                    }
+                            
+                    else if(loginDto.UserType.Equals("compliant")) 
+                    {
+
+                        return "Compliant Login Success";
+
+                    }
+                    else
+                    {
+                        return "Wrong User or Password";
+                    }
 
                 }
-                        
-                else if(loginDto.UserType.Equals("compliant")) 
-                {
-
-                    return "Compliant Login Success";
-
-                }
+               
+                //Not verified
                 else
                 {
-                    return "Login Failed";
+                    return "Wrong User or Password";
                 }
                 
             }
             
-            return "Login Failed";
+            return "Wrong User or Password";
 
 
         }

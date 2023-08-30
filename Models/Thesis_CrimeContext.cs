@@ -16,10 +16,16 @@ namespace barangay_crime_complaint_api.Models
         {
         }
 
+        public virtual DbSet<Announcement> Announcements { get; set; } = null!;
+        public virtual DbSet<CrimeCompliant> CrimeCompliants { get; set; } = null!;
+        public virtual DbSet<CrimeCompliantReport> CrimeCompliantReports { get; set; } = null!;
+        public virtual DbSet<CrimeImage> CrimeImages { get; set; } = null!;
+        public virtual DbSet<Location> Locations { get; set; } = null!;
         public virtual DbSet<PhBrgy> PhBrgies { get; set; } = null!;
         public virtual DbSet<PhCity> PhCities { get; set; } = null!;
         public virtual DbSet<PhProvZone> PhProvZones { get; set; } = null!;
         public virtual DbSet<PhProvince> PhProvinces { get; set; } = null!;
+        public virtual DbSet<Report> Reports { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,6 +39,108 @@ namespace barangay_crime_complaint_api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Announcement>(entity =>
+            {
+                entity.ToTable("Announcement");
+
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).IsUnicode(false);
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Announcements)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Announcement_User");
+            });
+
+            modelBuilder.Entity<CrimeCompliant>(entity =>
+            {
+                entity.ToTable("CrimeCompliant");
+
+                entity.Property(e => e.Title)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<CrimeCompliantReport>(entity =>
+            {
+                entity.ToTable("CrimeCompliantReport");
+
+                entity.Property(e => e.CaseType)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.CompliantType)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.DateResolved).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).IsUnicode(false);
+
+                entity.Property(e => e.Resolution).IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.CrimeCompliantReports)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_CrimeCompliantReport_User");
+            });
+
+            modelBuilder.Entity<CrimeImage>(entity =>
+            {
+                entity.ToTable("CrimeImage");
+
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.FileName).IsUnicode(false);
+
+                entity.HasOne(d => d.CrimeCompliantReport)
+                    .WithMany(p => p.CrimeImages)
+                    .HasForeignKey(d => d.CrimeCompliantReportId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CrimeImage_CrimeCompliantReport");
+            });
+
+            modelBuilder.Entity<Location>(entity =>
+            {
+                entity.ToTable("Location");
+
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).IsUnicode(false);
+
+                entity.Property(e => e.Lat).HasColumnType("decimal(18, 0)");
+
+                entity.Property(e => e.Long).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Locations)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Location_User");
+            });
+
             modelBuilder.Entity<PhBrgy>(entity =>
             {
                 entity.HasKey(e => e.BrgyCode);
@@ -139,6 +247,24 @@ namespace barangay_crime_complaint_api.Models
                     .HasColumnName("regionCode");
             });
 
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.Description).IsUnicode(false);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Reports)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Reports_User");
+            });
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
@@ -172,6 +298,10 @@ namespace barangay_crime_complaint_api.Models
                 entity.Property(e => e.HouseNo)
                     .HasMaxLength(150)
                     .IsUnicode(false);
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(50)

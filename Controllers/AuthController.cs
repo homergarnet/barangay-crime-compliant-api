@@ -52,13 +52,85 @@ namespace barangay_crime_compliant_api.Controllers
         }
 
         [HttpPost]
+        [Route("api/create-personal-info")]
+        public IActionResult CreatePersonalInfo(
+
+            [FromForm] IFormFile ValidId, [FromForm] IFormFile SelfieId, [FromForm] string Username,
+            [FromForm] string Password, [FromForm] string FirstName, [FromForm] string MiddleName,
+            [FromForm] string LastName, [FromForm] DateTime BirthDate, [FromForm] string Gender,
+            [FromForm] string Phone, [FromForm] string HouseNo, [FromForm] string Street,
+            [FromForm] string Village, [FromForm] string UnitFloor, [FromForm] string Building,
+            [FromForm] string ProvinceCode, [FromForm] string CityCode, [FromForm] string BrgyCode,
+            [FromForm] string ZipCode, [FromForm] DateTime DateCreated, [FromForm] string UserType
+
+        )
+        {
+            try {
+
+                    if (ValidId == null || ValidId.Length == 0)
+                    {
+                        return new ContentResult
+                        {
+                            StatusCode = 404,
+                            ContentType = "application/json",
+                            Content = "No Valid image uploaded"
+                        };
+                    }
+
+                    if (SelfieId == null || SelfieId.Length == 0)
+                    {
+                        return new ContentResult
+                        {
+                            StatusCode = 404,
+                            ContentType = "application/json",
+                            Content = "No Selfie image uploaded"
+                        };
+                    }
+
+
+                var user = _iAuthService.CreatePersonalInfo(
+                    ValidId, SelfieId, Username, Password, FirstName, MiddleName, LastName, BirthDate,
+                    Gender, Phone, HouseNo, Street, Village, UnitFloor, Building, ProvinceCode, CityCode,
+                    BrgyCode, ZipCode, DateCreated, UserType
+                );
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = user
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [HttpPost]
         [Route("api/login")]
         public IActionResult Login([FromBody] LoginDto loginInfo)
         {
             try {
 
                 var loginRes = _iAuthService.Login(loginInfo);
-               
+                if(loginRes.Equals("Login Failed")) 
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 500,
+                        ContentType = "application/json",
+                        Content = loginRes
+                    };
+                }
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -79,6 +151,8 @@ namespace barangay_crime_compliant_api.Controllers
             }
 
         }
+
+
 
 
     }

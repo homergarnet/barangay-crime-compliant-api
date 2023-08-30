@@ -5,6 +5,14 @@ namespace barangay_crime_complaint_api.Models
 {
     public partial class User
     {
+        public User()
+        {
+            Announcements = new HashSet<Announcement>();
+            CrimeCompliantReports = new HashSet<CrimeCompliantReport>();
+            Locations = new HashSet<Location>();
+            Reports = new HashSet<Report>();
+        }
+
         public long Id { get; set; }
         public string? Username { get; set; }
         public string? Password { get; set; }
@@ -26,5 +34,13 @@ namespace barangay_crime_complaint_api.Models
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public string? UserType { get; set; }
+        public byte[]? ValidId { get; set; }
+        public byte[]? Selfie { get; set; }
+        public bool? IsActive { get; set; }
+
+        public virtual ICollection<Announcement> Announcements { get; set; }
+        public virtual ICollection<CrimeCompliantReport> CrimeCompliantReports { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
+        public virtual ICollection<Report> Reports { get; set; }
     }
 }
