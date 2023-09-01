@@ -101,6 +101,11 @@ namespace barangay_crime_complaint_api
             services.AddTransient<ICompliantService, CompliantService>();
             services.AddTransient<IAnnouncementService, AnnouncementService>();
             services.AddTransient<ILocationService, LocationService>();
+            services.AddTransient<IDashboardService, DashboardService>();
+            services.AddTransient<IManageReportService, ManageReportService>();
+            services.AddTransient<IManageCrimeService, ManageCrimeService>();
+            services.AddTransient<IReportsService, ReportsService>();
+            
 
         }
 

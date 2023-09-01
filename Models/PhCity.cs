@@ -8,6 +8,7 @@ namespace barangay_crime_complaint_api.Models
         public PhCity()
         {
             PhBrgies = new HashSet<PhBrgy>();
+            Users = new HashSet<User>();
         }
 
         public string CityCode { get; set; } = null!;
@@ -18,5 +19,6 @@ namespace barangay_crime_complaint_api.Models
 
         public virtual PhProvince? ProvCodeNavigation { get; set; }
         public virtual ICollection<PhBrgy> PhBrgies { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

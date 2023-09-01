@@ -23,7 +23,7 @@ namespace barangay_crime_compliant_api.Services
 
             announcement.Description = announcementRes.Description;
             announcement.UserId = announcementRes.UserId;
-            announcement.DateTimeCreated = DateTime.UtcNow;
+            announcement.DateTimeCreated = DateTime.Now;
             db.Announcements.Add(announcement);
             db.SaveChanges();
             return announcementRes;
@@ -63,7 +63,7 @@ namespace barangay_crime_compliant_api.Services
 
                 var announcement = db.Announcements.Where(z => z.Id == id && z.UserId == userId).First();
                 announcement.Description = announcementInfo.Description;
-                announcement.DateTimeUpdated = DateTime.UtcNow;
+                announcement.DateTimeUpdated = DateTime.Now;
                 db.SaveChanges();
 
             }
@@ -80,7 +80,7 @@ namespace barangay_crime_compliant_api.Services
             {
 
                 var announcement = db.Announcements.Where(z => z.Id == id && z.UserId == userId).First();
-                announcement.DateTimeUpdated = DateTime.UtcNow;
+                announcement.DateTimeUpdated = DateTime.Now;
                 announcement.IsActive = false;
                 db.SaveChanges();
 

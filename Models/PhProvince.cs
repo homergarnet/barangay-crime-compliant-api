@@ -9,6 +9,7 @@ namespace barangay_crime_complaint_api.Models
         {
             PhCities = new HashSet<PhCity>();
             PhProvZones = new HashSet<PhProvZone>();
+            Users = new HashSet<User>();
         }
 
         public string ProvCode { get; set; } = null!;
@@ -17,5 +18,6 @@ namespace barangay_crime_complaint_api.Models
 
         public virtual ICollection<PhCity> PhCities { get; set; }
         public virtual ICollection<PhProvZone> PhProvZones { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

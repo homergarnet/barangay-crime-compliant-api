@@ -12,7 +12,9 @@ namespace barangay_crime_complaint_api.Models
         public DateTime? DateTimeCreated { get; set; }
         public DateTime? DateTimeUpdated { get; set; }
         public long? UserId { get; set; }
+        public long? CrimeCompliantReportId { get; set; }
 
+        public virtual CrimeCompliantReport? CrimeCompliantReport { get; set; }
         public virtual User? User { get; set; }
     }
 }

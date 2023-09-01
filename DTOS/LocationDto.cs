@@ -11,6 +11,7 @@ namespace barangay_crime_compliant_api.DTOS
         public DateTime? DateTimeCreated { get; set; }
         public DateTime? DateTimeUpdated { get; set; }
         public long? UserId { get; set; }
+        public long? CrimeCompliantReportId { get;set; }
 
     }
 

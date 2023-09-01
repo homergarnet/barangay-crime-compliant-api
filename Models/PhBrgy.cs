@@ -5,6 +5,11 @@ namespace barangay_crime_complaint_api.Models
 {
     public partial class PhBrgy
     {
+        public PhBrgy()
+        {
+            Users = new HashSet<User>();
+        }
+
         public string BrgyCode { get; set; } = null!;
         public string? BrgyName { get; set; }
         public string? CityCode { get; set; }
@@ -12,5 +17,6 @@ namespace barangay_crime_complaint_api.Models
         public bool? IsActive { get; set; }
 
         public virtual PhCity? CityCodeNavigation { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

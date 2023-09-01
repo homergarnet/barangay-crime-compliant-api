@@ -27,17 +27,20 @@ namespace barangay_crime_complaint_api.Models
         public string? Village { get; set; }
         public string? UnitFloor { get; set; }
         public string? Building { get; set; }
-        public string? ProvinceCode { get; set; }
-        public string? CityCode { get; set; }
-        public string? BrgyCode { get; set; }
-        public string? ZipCode { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public string? UserType { get; set; }
         public byte[]? ValidId { get; set; }
         public byte[]? Selfie { get; set; }
         public bool? IsActive { get; set; }
+        public string? ProvinceCode { get; set; }
+        public string? CityCode { get; set; }
+        public string? BrgyCode { get; set; }
+        public string? ZipCode { get; set; }
 
+        public virtual PhBrgy? BrgyCodeNavigation { get; set; }
+        public virtual PhCity? CityCodeNavigation { get; set; }
+        public virtual PhProvince? ProvinceCodeNavigation { get; set; }
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<CrimeCompliantReport> CrimeCompliantReports { get; set; }
         public virtual ICollection<Location> Locations { get; set; }

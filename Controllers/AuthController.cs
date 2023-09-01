@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using barangay_crime_complaint_api.Models;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
@@ -152,8 +153,70 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [HttpGet]
+        [Route("api/get-user-personal-info")]
+        public IActionResult GetUserPersonalInfoList(
+            [FromQuery] string keyword, [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 10
+        )
+        {
 
+            try {
 
+                var getUserPersonalInfoList = _iAuthService.GetUserPersonalInfoList(keyword, page, pageSize);
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getUserPersonalInfoList)
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [HttpGet]
+        [Route("api/get-user-personal-info-by-id")]
+        public IActionResult GetUserPersonalInfoById(
+            [FromQuery] long id
+        )
+        {
+
+            try {
+
+                var getUserPersonalInfoList = _iAuthService.GetUserPersonalInfoById(id);
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getUserPersonalInfoList)
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
 
     }
 }

@@ -17,6 +17,8 @@ namespace barangay_crime_compliant_api.Services
             string UserType
         );
         string Login(LoginDto loginInfo);
+        List<UserDto> GetUserPersonalInfoList( string keyword, int page, int pageSize);
+        UserDto GetUserPersonalInfoById(long id);
 
     }
 }

@@ -14,16 +14,16 @@ namespace barangay_crime_compliant_api.Services
             this.db = db;
         }
 
-        public async Task<List<long>> CreateCaseReport(List<IFormFile> CrimeImage, long UserId, string CompliantType, string Description, DateTime DateTimeCreated, string CaseType)
+        public async Task<List<long>> CreateCaseReport(List<IFormFile> CrimeImage, long UserId, string Description, DateTime DateTimeCreated, long CrimeCompliantId)
         {
             
             var uploadedImageIds = new List<long>();
             var crimeCompliantReport = new CrimeCompliantReport
             {
-                CompliantType = CompliantType,
+
                 Description = Description,
-                DateTimeCreated = DateTime.UtcNow,
-                CaseType = CaseType,
+                DateTimeCreated = DateTime.Now,
+                CrimeCompliantId = CrimeCompliantId,
                 UserId = UserId,
             };
             await db.CrimeCompliantReports.AddAsync(crimeCompliantReport);
@@ -44,7 +44,7 @@ namespace barangay_crime_compliant_api.Services
 
                         CrimeCompliantReportId = crimeCompliantReport.Id,
                         Image = memoryStream.ToArray(),
-                        DateTimeCreated = DateTime.UtcNow,
+                        DateTimeCreated = DateTime.Now,
                         FileName = imageFile.FileName,
 
                     };
@@ -61,5 +61,34 @@ namespace barangay_crime_compliant_api.Services
             return uploadedImageIds;
 
         }
+
+        public List<CrimeCompliantDto> GetCrimeCompliantList(string keyword, int page, int pageSize)
+        {
+
+            IQueryable<CrimeCompliant> query = db.CrimeCompliants;
+            List<CrimeCompliantDto> crimeCompliantList = new List<CrimeCompliantDto>();
+            if(!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(z => z.Title.Contains(keyword));
+            }
+
+            var crimeCompliantRes = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            foreach(var crimeCompliant in crimeCompliantRes)
+            {
+
+                var crimeCompliantDto = new CrimeCompliantDto();
+                crimeCompliantDto.Id = crimeCompliant.Id;
+                crimeCompliantDto.Title = crimeCompliant.Title;
+                crimeCompliantDto.Type = crimeCompliant.Type;
+                crimeCompliantList.Add(crimeCompliantDto);
+                
+            }
+            
+            return crimeCompliantList;
+
+        }
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using barangay_crime_complaint_api.Models;
 using barangay_crime_compliant_api.DTOS;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace barangay_crime_compliant_api.Services
@@ -40,8 +41,8 @@ namespace barangay_crime_compliant_api.Services
             user.CityCode = item.CityCode;
             user.BrgyCode = item.BrgyCode;
             user.ZipCode = item.ZipCode;
-            user.DateCreated =DateTime.UtcNow;
-            user.DateUpdated =DateTime.UtcNow;
+            user.DateCreated =DateTime.Now;
+            user.DateUpdated =DateTime.Now;
             user.UserType = item.UserType;
             db.Users.Add(user);
             db.SaveChanges();
@@ -97,8 +98,8 @@ namespace barangay_crime_compliant_api.Services
             user.CityCode = CityCode;
             user.BrgyCode = BrgyCode;
             user.ZipCode = ZipCode;
-            user.DateCreated =DateTime.UtcNow;
-            user.DateUpdated =DateTime.UtcNow;
+            user.DateCreated =DateTime.Now;
+            user.DateUpdated =DateTime.Now;
             user.UserType = UserType;
             using (var memoryStream = new MemoryStream())
             {
@@ -187,7 +188,87 @@ namespace barangay_crime_compliant_api.Services
             
             return "Wrong User or Password";
 
+        }
 
+        public List<UserDto> GetUserPersonalInfoList(string keyword, int page, int pageSize)
+        {
+            IQueryable<User> query = db.Users;
+
+            var provinceQuery = db.PhProvinces;
+            var cityQuery = db.PhCities;
+            var barangayQuery = db.PhBrgies;
+
+            List<UserDto> getUserPersonalInfoList = new List<UserDto>();
+            if(!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(
+                    z => z.FirstName.Contains(keyword) || z.MiddleName.Contains(keyword) ||
+                    z.LastName.Contains(keyword) || z.ProvinceCodeNavigation.ProvDesc.Contains(keyword) ||
+                    z.CityCodeNavigation.CityDescription.Contains(keyword) || 
+                    z.BrgyCodeNavigation.BrgyName.Contains(keyword) || z.Phone.Contains(keyword)
+                );
+            }
+
+            var userPersonalInfoRes = query
+            .Include(z => z.ProvinceCodeNavigation)
+            .Include(z => z.CityCodeNavigation)
+            .Include(z => z.BrgyCodeNavigation)
+            .Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            foreach(var userPersonalInfo in userPersonalInfoRes)
+            {
+
+                var userPersonalInfoDto = new UserDto();
+                userPersonalInfoDto.Id = userPersonalInfo.Id;
+
+                userPersonalInfoDto.FirstName = userPersonalInfo.FirstName;
+                userPersonalInfoDto.MiddleName = userPersonalInfo.MiddleName;
+                userPersonalInfoDto.LastName = userPersonalInfo.LastName;
+              
+                userPersonalInfoDto.ProvinceName = userPersonalInfo.ProvinceCodeNavigation.ProvDesc;
+                userPersonalInfoDto.CityName = userPersonalInfo.CityCodeNavigation.CityDescription;
+                userPersonalInfoDto.BarangayName = userPersonalInfo.BrgyCodeNavigation.BrgyName;
+                userPersonalInfoDto.Phone = userPersonalInfo.Phone;
+              
+                getUserPersonalInfoList.Add(userPersonalInfoDto);
+                
+            }
+            
+            return getUserPersonalInfoList;
+        }
+
+        public UserDto GetUserPersonalInfoById(long id)
+        {
+
+            IQueryable<User> query = db.Users;
+            var provinceQuery = db.PhProvinces;
+            var cityQuery = db.PhCities;
+            var barangayQuery = db.PhBrgies;
+
+            var userPersonalInfo = new UserDto();
+            var hasUserPersonalInfo = db.Users.Any(z => z.Id == id);
+            if(hasUserPersonalInfo) 
+            {
+
+                var userPersonalInfoRes = query
+                .Include(z => z.ProvinceCodeNavigation)
+                .Include(z => z.CityCodeNavigation)
+                .Include(z => z.BrgyCodeNavigation)
+                .Where(z => z.Id == id).FirstOrDefault();
+                userPersonalInfo.Id = userPersonalInfoRes.Id;
+                userPersonalInfo.FirstName = userPersonalInfoRes.FirstName;
+                userPersonalInfo.MiddleName = userPersonalInfoRes.MiddleName;
+                userPersonalInfo.LastName = userPersonalInfoRes.LastName;
+                userPersonalInfo.ProvinceName = userPersonalInfoRes.ProvinceCodeNavigation.ProvDesc;
+                userPersonalInfo.CityName = userPersonalInfoRes.CityCodeNavigation.CityDescription;
+                userPersonalInfo.BarangayName = userPersonalInfoRes.BrgyCodeNavigation.BrgyName;
+                userPersonalInfo.Phone = userPersonalInfoRes.Phone;
+                userPersonalInfo.ValidIdImage = userPersonalInfoRes.ValidId;
+                userPersonalInfo.SelfieIdImage = userPersonalInfoRes.Selfie;
+
+            }
+            
+            return userPersonalInfo;
         }
 
     }

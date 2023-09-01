@@ -76,14 +76,6 @@ namespace barangay_crime_complaint_api.Models
             {
                 entity.ToTable("CrimeCompliantReport");
 
-                entity.Property(e => e.CaseType)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.CompliantType)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.DateResolved).HasColumnType("datetime");
 
                 entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
@@ -97,6 +89,11 @@ namespace barangay_crime_complaint_api.Models
                 entity.Property(e => e.Status)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.CrimeCompliant)
+                    .WithMany(p => p.CrimeCompliantReports)
+                    .HasForeignKey(d => d.CrimeCompliantId)
+                    .HasConstraintName("FK_CrimeCompliantReport_CrimeCompliant");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CrimeCompliantReports)
@@ -134,6 +131,11 @@ namespace barangay_crime_complaint_api.Models
                 entity.Property(e => e.Lat).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Long).HasColumnType("decimal(18, 0)");
+
+                entity.HasOne(d => d.CrimeCompliantReport)
+                    .WithMany(p => p.Locations)
+                    .HasForeignKey(d => d.CrimeCompliantReportId)
+                    .HasConstraintName("FK_Location_CrimeCompliantReport");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Locations)
@@ -272,7 +274,7 @@ namespace barangay_crime_complaint_api.Models
                 entity.Property(e => e.BirthDate).HasColumnType("date");
 
                 entity.Property(e => e.BrgyCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Building)
@@ -280,7 +282,7 @@ namespace barangay_crime_complaint_api.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.CityCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.DateCreated).HasColumnType("datetime");
@@ -320,7 +322,7 @@ namespace barangay_crime_complaint_api.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ProvinceCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
 
                 entity.Property(e => e.Street)
@@ -344,8 +346,23 @@ namespace barangay_crime_complaint_api.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.ZipCode)
-                    .HasMaxLength(50)
+                    .HasMaxLength(10)
                     .IsUnicode(false);
+
+                entity.HasOne(d => d.BrgyCodeNavigation)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.BrgyCode)
+                    .HasConstraintName("FK_User_PhBrgy");
+
+                entity.HasOne(d => d.CityCodeNavigation)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.CityCode)
+                    .HasConstraintName("FK_User_PhCity");
+
+                entity.HasOne(d => d.ProvinceCodeNavigation)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.ProvinceCode)
+                    .HasConstraintName("FK_User_PhProvince");
             });
 
             OnModelCreatingPartial(modelBuilder);
