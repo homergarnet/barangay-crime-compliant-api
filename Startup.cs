@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Features;
 namespace barangay_crime_complaint_api
 {
     public class Startup
@@ -106,6 +107,12 @@ namespace barangay_crime_complaint_api
             services.AddTransient<IManageCrimeService, ManageCrimeService>();
             services.AddTransient<IReportsService, ReportsService>();
             
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 10_000_000; // 10 MB limit per file
+                options.ValueLengthLimit = int.MaxValue;      // unlimited input length
+                options.MultipartHeadersLengthLimit = int.MaxValue; // unlimited header length
+            });
 
         }
 

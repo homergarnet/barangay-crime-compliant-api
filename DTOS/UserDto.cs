@@ -25,8 +25,8 @@ namespace barangay_crime_compliant_api.DTOS
         public DateTime? DateUpdated { get; set; }
         public string? UserType { get; set; }
         public string? Token { get;set; }
-        public byte[]? ValidIdImage { get;set; }
-        public byte[]? SelfieIdImage { get;set; }
+        public string? ValidIdImage { get;set; }
+        public string? SelfieIdImage { get;set; }
         public string? ProvinceName { get;set; }
         public string? CityName { get;set; }
         public string? BarangayName { get;set; }

@@ -5,6 +5,7 @@ namespace barangay_crime_compliant_api.DTOS
     {
 
         public long ReportId { get;set; }
+        public string ReportIdStr { get;set; }
         public string Barangay { get;set; }
         public DateTime? Date { get;set; }
         public TimeSpan? Time { get;set; }
@@ -15,6 +16,7 @@ namespace barangay_crime_compliant_api.DTOS
         public string ReporterName { get;set; }
         public string ReporterContact { get;set; }
         public string Status { get;set; }
+        public string Resolution { get;set; }
 
     }
 

@@ -30,12 +30,20 @@ namespace barangay_crime_compliant_api.Controllers
             try {
 
                 var user = _iAuthService.CreateAccount(userInfo);
-               
+                if(user == "User Already Exist")
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 500,
+                        ContentType = "application/json",
+                        Content = user
+                    };
+                }
                 return new ContentResult
                 {
                     StatusCode = 200,
                     ContentType = "application/json",
-                    Content = user.Token
+                    Content = user
                 };
 
             }
@@ -123,7 +131,7 @@ namespace barangay_crime_compliant_api.Controllers
             try {
 
                 var loginRes = _iAuthService.Login(loginInfo);
-                if(loginRes.Equals("Login Failed")) 
+                if(loginRes.Equals("Wrong User or Password")) 
                 {
                     return new ContentResult
                     {

@@ -8,7 +8,7 @@ namespace barangay_crime_compliant_api.Services
     public interface IAuthService
     {
 
-        UserDto CreateAccount(UserDto userReq);
+        string CreateAccount(UserDto userReq);
         string CreatePersonalInfo(
             IFormFile ValidId, IFormFile SelfieId, string Username, string Password, string FirstName, 
             string MiddleName, string LastName, DateTime BirthDate, string Gender, string Phone, 

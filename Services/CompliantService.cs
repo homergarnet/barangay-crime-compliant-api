@@ -35,15 +35,18 @@ namespace barangay_crime_compliant_api.Services
                 {
                     continue;
                 }
-
-                using (var memoryStream = new MemoryStream())
+                // Define a target directory to save the uploaded file
+                var targetDirectory = "uploads"; // Change this to your desired directory
+                var filePath = Path.Combine(targetDirectory, Guid.NewGuid().ToString() + "_" + imageFile.FileName);
+                Directory.CreateDirectory(targetDirectory); // Ensure the directory exists
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await imageFile.CopyToAsync(memoryStream);
+                    await imageFile.CopyToAsync(stream);
                     var crimeImageReport = new CrimeImage
                     {
 
                         CrimeCompliantReportId = crimeCompliantReport.Id,
-                        Image = memoryStream.ToArray(),
+                        Image = imageFile.FileName,
                         DateTimeCreated = DateTime.Now,
                         FileName = imageFile.FileName,
 
@@ -53,7 +56,6 @@ namespace barangay_crime_compliant_api.Services
                     await db.SaveChangesAsync();
 
                     uploadedImageIds.Add(crimeImageReport.Id);
-
                 }
                 
             }

@@ -19,54 +19,68 @@ namespace barangay_crime_compliant_api.Services
             this.db = db;
         }
 
-        public UserDto CreateAccount(UserDto item)
+        public string CreateAccount(UserDto item)
         {
             
             User user = new User();
             // user.Id = item.Id;
-            user.Username = item.Username;
-            user.Password = BCrypt.Net.BCrypt.HashPassword(item.Password);
-            user.FirstName = item.FirstName;
-            user.MiddleName = item.MiddleName;
-            user.LastName = item.LastName;
-            user.BirthDate = item.BirthDate;
-            user.Gender = item.Gender;
-            user.Phone = item.Phone;
-            user.HouseNo = item.HouseNo;
-            user.Street = item.Street;
-            user.Village = item.Village;
-            user.UnitFloor = item.UnitFloor;
-            user.Building = item.Building;
-            user.ProvinceCode = item.ProvinceCode;
-            user.CityCode = item.CityCode;
-            user.BrgyCode = item.BrgyCode;
-            user.ZipCode = item.ZipCode;
-            user.DateCreated =DateTime.Now;
-            user.DateUpdated =DateTime.Now;
-            user.UserType = item.UserType;
-            db.Users.Add(user);
-            db.SaveChanges();
-            // User Claims
-            var claims = new List<Claim>
+            var userExist = db.Users.Any(z => z.Username == item.Username);
+            if(userExist)
             {
-                new Claim("Username", item.Username.ToString()),
-                
-            };
+                return "User Already Exist";
+            }
+            else 
+            {
 
-            // Encrypt credentials
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+                user.Username = item.Username;
+                user.Password = BCrypt.Net.BCrypt.HashPassword(item.Password);
+                user.FirstName = item.FirstName;
+                user.MiddleName = item.MiddleName;
+                user.LastName = item.LastName;
+                user.BirthDate = item.BirthDate;
+                user.Gender = item.Gender;
+                user.Phone = item.Phone;
+                user.HouseNo = item.HouseNo;
+                user.Street = item.Street;
+                user.Village = item.Village;
+                user.UnitFloor = item.UnitFloor;
+                user.Building = item.Building;
+                user.ProvinceCode = item.ProvinceCode;
+                user.CityCode = item.CityCode;
+                user.BrgyCode = item.BrgyCode;
+                user.ZipCode = item.ZipCode;
+                user.DateCreated =DateTime.Now;
+                user.DateUpdated =DateTime.Now;
+                user.UserType = item.UserType;
+                db.Users.Add(user);
+                db.SaveChanges();
+                // User Claims
+                var claims = new List<Claim>
+                {
+                    new Claim("Username", item.Username.ToString()),
+                    new Claim("FirstName", item.FirstName.ToString()),
+                    new Claim("MiddleName", item.MiddleName.ToString()),
+                    new Claim("LastName", item.LastName.ToString()),
+                    
+                };
 
-            var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
-                configuration["Jwt:Issuer"],
-                claims,
-                expires: DateTime.Now.AddHours(8766), // Set to 1 year
-                signingCredentials: credentials);
+                // Encrypt credentials
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            // Generate JWT
-            var token = new JwtSecurityTokenHandler().WriteToken(auth);
-            item.Token = token;
-            return item;
+                var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                    configuration["Jwt:Issuer"],
+                    claims,
+                    expires: DateTime.Now.AddHours(8766), // Set to 1 year
+                    signingCredentials: credentials);
+
+                // Generate JWT
+                var token = new JwtSecurityTokenHandler().WriteToken(auth);
+                item.Token = token;
+                return "Successfully Created Account";
+            }
+
+            
 
         }
 
@@ -101,16 +115,42 @@ namespace barangay_crime_compliant_api.Services
             user.DateCreated =DateTime.Now;
             user.DateUpdated =DateTime.Now;
             user.UserType = UserType;
+
+            // Define a target directory to save the uploaded file
+            var targetDirectory = "uploads"; // Change this to your desired directory
+
+            // Ensure the target directory exists
+            Directory.CreateDirectory(targetDirectory);
+
+            // Generate a unique file name to avoid overwriting
+            var validId = Path.Combine(targetDirectory, Guid.NewGuid().ToString() + "_" + ValidId.FileName);
+            var selfie = Path.Combine(targetDirectory, Guid.NewGuid().ToString() + "_" + SelfieId.FileName);
+
+            // Save the file to the server
+            using (var fileStream = new FileStream(validId, FileMode.Create))
+            {
+
+                ValidId.CopyTo(fileStream);
+
+            }
+
+            using (var fileStream = new FileStream(selfie, FileMode.Create))
+            {
+
+                ValidId.CopyTo(fileStream);
+                
+            }
+
             using (var memoryStream = new MemoryStream())
             {
                 ValidId.CopyTo(memoryStream);
-                user.ValidId = memoryStream.ToArray();
+                user.ValidId = validId;
             }
             using (var memoryStream = new MemoryStream())
             {
 
                 SelfieId.CopyTo(memoryStream);
-                user.Selfie = memoryStream.ToArray();
+                user.Selfie = selfie;
                 
             }
 
@@ -122,6 +162,9 @@ namespace barangay_crime_compliant_api.Services
             {
 
                 new Claim("Username", Username.ToString()),
+                new Claim("FirstName", FirstName.ToString()),
+                new Claim("MiddleName", MiddleName.ToString()),
+                new Claim("LastName", LastName.ToString()),
                 
             };
 
@@ -148,32 +191,57 @@ namespace barangay_crime_compliant_api.Services
             var user = db.Users.Where(z => z.Username  == loginDto.Username).FirstOrDefault();
             bool verified = false;
             string password = loginDto.Password.Trim();
+            
             if (user != null) 
             {
                 verified = BCrypt.Net.BCrypt.Verify(password, user.Password);
                 if(verified) 
                 {
 
+                    // User Claims
+                    var claims = new List<Claim>
+                    {
+
+                        new Claim("Username", user.Username.ToString()),
+                        new Claim("FirstName", user.FirstName.ToString()),
+                        new Claim("MiddleName", user.MiddleName.ToString()),
+                        new Claim("LastName", user.LastName.ToString()),
+                        
+                    };
+
+                    // Encrypt credentials
+                    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
+                    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                    var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
+                        configuration["Jwt:Issuer"],
+                        claims,
+                        expires: DateTime.Now.AddHours(8766), // Set to 1 year
+                        signingCredentials: credentials);
+
+                    // Generate JWT
+                    var token = new JwtSecurityTokenHandler().WriteToken(auth);
+
                     if(loginDto.UserType.Equals("admin")) 
                     {
-                        return "Admin Login Success";
+                        return token;
                     } 
                     else if(loginDto.UserType.Equals("barangay")) 
                     {
 
-                        return "Barangay Login Success";
+                        return token;
 
                     }
                             
                     else if(loginDto.UserType.Equals("compliant")) 
                     {
 
-                        return "Compliant Login Success";
+                        return token;
 
                     }
                     else
                     {
-                        return "Wrong User or Password";
+                        return token;
                     }
 
                 }

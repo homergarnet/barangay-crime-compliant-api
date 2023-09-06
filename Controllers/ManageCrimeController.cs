@@ -19,6 +19,7 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpGet]
         [Route("api/get-manage-crime")]
         public IActionResult GetManageCrimeList(
+            [FromQuery] string reportType,
             [FromQuery] string keyword, [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10
         )
@@ -26,7 +27,7 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(keyword, page, pageSize);
+                var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, keyword, page, pageSize);
                
                 return new ContentResult
                 {
@@ -52,13 +53,14 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpGet]
         [Route("api/get-manage-crime-by-id")]
         public IActionResult GetManageCrimeById(
-            [FromQuery] long id
+            [FromQuery] long id,
+            [FromQuery] string reportType
         )
         {
 
             try {
 
-                var getManageCrimeRes = _iManageCrimeService.GetManageCrimeById(id);
+                var getManageCrimeRes = _iManageCrimeService.GetManageCrimeById(id, reportType);
                
                 return new ContentResult
                 {

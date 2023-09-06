@@ -14,7 +14,7 @@ namespace barangay_crime_compliant_api.Services
             this.configuration = configuration;
             this.db = db;
         }
-        public List<ManageCrimeDto> GetManageCrimeList(string keyword, int page, int pageSize)
+        public List<ManageCrimeDto> GetManageCrimeList(string reportType, string keyword, int page, int pageSize)
         {
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
             var locationQuery = db.Locations;
@@ -22,7 +22,39 @@ namespace barangay_crime_compliant_api.Services
             List<ManageCrimeDto> manageCrimeList = new List<ManageCrimeDto>();
             if(!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword));
+
+                if(reportType != null)
+                {
+                    if(!string.IsNullOrEmpty(reportType) && reportType.Equals("compliant types"))
+                    {
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Equals("compliant types"));
+                    }
+                    if(reportType.Equals("index crime") || reportType.Equals("non index crime"))
+                    {
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Equals("index crime") || z.CrimeCompliant.Type.Equals("non index crime"));
+                    }
+                    else
+                    {
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword));
+                    }
+                }
+
+            }
+            else 
+            {
+
+                if(reportType != null)
+                {
+                    if(!string.IsNullOrEmpty(reportType) && reportType.Equals("compliant types"))
+                    {
+                        query = query.Where(z => z.CrimeCompliant.Type.Equals(reportType));
+                    }
+                    if(reportType.Equals("index crime") || reportType.Equals("non index crime"))
+                    {
+                        query = query.Where(z => z.CrimeCompliant.Type.Equals("index crime") || z.CrimeCompliant.Type.Equals("non index crime"));
+                    }
+                }
+
             }
 
             var manageCrimeReportRes = query.Include(z => z.User).Include(z => z.CrimeCompliant)
@@ -32,7 +64,9 @@ namespace barangay_crime_compliant_api.Services
             {
 
                 var manageCrimeDto = new ManageCrimeDto();
+                string formattedIdValue = manageCrime.Id.ToString("D3");
                 manageCrimeDto.ReportId = manageCrime.Id;
+                manageCrimeDto.ReportIdStr = formattedIdValue;
                 manageCrimeDto.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrime.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeDto.Date = manageCrime.DateTimeCreated.Value;
                 manageCrimeDto.Time = manageCrime.DateTimeCreated.Value.TimeOfDay;
@@ -43,6 +77,7 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.ReporterName = manageCrime.User.FirstName + " " + manageCrime.User.MiddleName + " " + manageCrime.User.LastName;
                 manageCrimeDto.ReporterContact = manageCrime.User.Phone;
                 manageCrimeDto.Status = manageCrime.Status;
+                manageCrimeDto.Resolution = manageCrime.Resolution;
                 manageCrimeList.Add(manageCrimeDto);
                 
             }
@@ -50,9 +85,23 @@ namespace barangay_crime_compliant_api.Services
             return manageCrimeList;
         }
 
-        public ManageCrimeDto GetManageCrimeById(long id)
+        public ManageCrimeDto GetManageCrimeById(long id, string reportType)
         {
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
+            if(reportType != null)
+            {
+
+                if(!string.IsNullOrEmpty(reportType) && reportType.Equals("compliant types"))
+                {
+                    query = query.Where(z => z.CrimeCompliant.Type.Equals(reportType));
+                }
+                if(reportType.Equals("index crime") || reportType.Equals("non index crime"))
+                {
+                    query = query.Where(z => z.CrimeCompliant.Type.Equals("index crime") && z.CrimeCompliant.Type.Equals("non index crime"));
+                }
+                
+            }
+
             var locationQuery = db.Locations;
             var barangayQuery = db.PhBrgies;
             ManageCrimeDto manageCrimeRes = new ManageCrimeDto();
@@ -62,7 +111,9 @@ namespace barangay_crime_compliant_api.Services
             {
                 
                 var manageCrimeReportRes = query.Include(z => z.User).Include(z => z.CrimeCompliant).Where(z => z.Id == id).FirstOrDefault();
+                string formattedIdValue = manageCrimeReportRes.Id.ToString("D3");
                 manageCrimeRes.ReportId = manageCrimeReportRes.Id;
+                manageCrimeRes.ReportIdStr = formattedIdValue;
                 manageCrimeRes.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrimeReportRes.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeRes.Date = manageCrimeReportRes.DateTimeCreated.Value;
                 manageCrimeRes.Time = manageCrimeReportRes.DateTimeCreated.Value.TimeOfDay;
@@ -73,6 +124,7 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeRes.ReporterName = manageCrimeReportRes.User.FirstName + " " + manageCrimeReportRes.User.MiddleName + " " + manageCrimeReportRes.User.LastName;
                 manageCrimeRes.ReporterContact = manageCrimeReportRes.User.Phone;
                 manageCrimeRes.Status = manageCrimeReportRes.Status;
+                manageCrimeRes.Resolution = manageCrimeReportRes.Resolution;
 
             }
 

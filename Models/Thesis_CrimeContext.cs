@@ -111,6 +111,8 @@ namespace barangay_crime_complaint_api.Models
 
                 entity.Property(e => e.FileName).IsUnicode(false);
 
+                entity.Property(e => e.Image).IsUnicode(false);
+
                 entity.HasOne(d => d.CrimeCompliantReport)
                     .WithMany(p => p.CrimeImages)
                     .HasForeignKey(d => d.CrimeCompliantReportId)
@@ -325,6 +327,8 @@ namespace barangay_crime_complaint_api.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Selfie).IsUnicode(false);
+
                 entity.Property(e => e.Street)
                     .HasMaxLength(150)
                     .IsUnicode(false);
@@ -340,6 +344,8 @@ namespace barangay_crime_complaint_api.Models
                 entity.Property(e => e.Username)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+
+                entity.Property(e => e.ValidId).IsUnicode(false);
 
                 entity.Property(e => e.Village)
                     .HasMaxLength(150)
