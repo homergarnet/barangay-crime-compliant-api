@@ -83,5 +83,73 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [HttpPut]
+        [Route("api/update-crime-status")]
+        public IActionResult UpdateCrimeStatus(
+            [FromQuery] long id,
+            [FromQuery] long userId,
+            [FromQuery] string status
+        )
+        {
+
+            try {
+
+                var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, userId, status);
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = updateCrimeImage
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [HttpPut]
+        [Route("api/update-crime-resolution")]
+        public IActionResult UpdateCrimeResolution(
+            [FromQuery] long id,
+            [FromQuery] long userId,
+            [FromQuery] string resolution
+        )
+        {
+
+            try {
+
+                var updateCrimeImage = _iManageCrimeService.UpdateCrimeResolution(id, userId, resolution);
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = updateCrimeImage
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
     }
 }

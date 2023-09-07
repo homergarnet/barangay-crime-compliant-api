@@ -132,5 +132,41 @@ namespace barangay_crime_compliant_api.Services
             return manageCrimeRes;
         }
 
+        public string UpdateCrimeStatus(long id, long userId, string status)
+        {
+            var hasCrimeStatus = db.CrimeCompliantReports.Any(z => z.Id == id && z.UserId == userId);
+
+            if(hasCrimeStatus) 
+            {
+                var crimeStatus = db.CrimeCompliantReports.Where(z => z.Id == id && z.UserId == userId).First();
+                crimeStatus.Status = status;
+                crimeStatus.DateTimeUpdated = DateTime.Now;
+                db.SaveChanges();
+                return "updated Crime Status";
+            }
+
+            return "No updated Crime Status";
+
+
+        }
+
+        public string UpdateCrimeResolution(long id, long userId, string resolution)
+        {
+            var hasCrimeStatus = db.CrimeCompliantReports.Any(z => z.Id == id && z.UserId == userId);
+
+            if(hasCrimeStatus) 
+            {
+                var crimeStatus = db.CrimeCompliantReports.Where(z => z.Id == id && z.UserId == userId).First();
+                crimeStatus.Status = "resolved";
+                crimeStatus.Resolution = resolution;
+                crimeStatus.DateResolved = DateTime.Now;
+                db.SaveChanges();
+                return "updated Crime Resolution";
+            }
+
+            return "No updated Crime Resolution";
+
+        }
+
     }
 }

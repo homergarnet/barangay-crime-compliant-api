@@ -7,5 +7,7 @@ namespace barangay_crime_compliant_api.Services
          
         Task<List<long>> CreateCaseReport(List<IFormFile> CrimeImage, long UserId, string Description, DateTime DateTimeCreated, long CrimeCompliantId);
         List<CrimeCompliantDto> GetCrimeCompliantList(string keyword, int page, int pageSize);
+        List<CrimeImageDto> GetCrimeImageList(long crimeCompliantReportId, string keyword, int page, int pageSize);
+        string UpdateCrimeImage(long id, long userId, IFormFile CrimeImage);
     }
 }

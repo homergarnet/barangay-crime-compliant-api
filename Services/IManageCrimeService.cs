@@ -8,6 +8,8 @@ namespace barangay_crime_compliant_api.Services
         // GetManageIncidentReport();
         List<ManageCrimeDto> GetManageCrimeList(string reportType, string keyword, int page, int pageSize);
         ManageCrimeDto GetManageCrimeById(long id, string reportType);
+        string UpdateCrimeStatus(long id, long userId, string status);
+        string UpdateCrimeResolution(long id, long userId, string resolution);
     }
 
 }
