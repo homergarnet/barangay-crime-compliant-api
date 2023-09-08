@@ -17,7 +17,7 @@ namespace barangay_crime_compliant_api.Controllers
         [Authorize]
         [HttpPost]
         [Route("api/create-case-report")]
-        public async Task<IActionResult> CreateCaseReport([FromForm] List<IFormFile> CrimeImage, [FromForm] long UserId, [FromForm] string Description, [FromForm] DateTime DateTimeCreated, [FromForm] long CrimeCompliantId)
+        public async Task<IActionResult> CreateCaseReport([FromForm] List<IFormFile> CrimeImage, [FromForm] string Description, [FromForm] DateTime DateTimeCreated, [FromForm] long CrimeCompliantId)
         {
             if (CrimeImage == null || CrimeImage.Count == 0)
             {
@@ -32,7 +32,9 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var user = await _iCompliantService.CreateCaseReport(CrimeImage, UserId, Description, DateTimeCreated, CrimeCompliantId);
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+
+                var user = await _iCompliantService.CreateCaseReport(CrimeImage, userId, Description, DateTimeCreated, CrimeCompliantId);
                
                 return new ContentResult
                 {
@@ -130,14 +132,12 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/update-crime-image")]
         public IActionResult UpdateCrimeImage(
             [FromQuery] long id,
-            [FromQuery] long userId,
- 
             [FromForm] IFormFile CrimeImage
         )
         {
 
             try {
-
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var updateCrimeImage = _iCompliantService.UpdateCrimeImage(id, userId, CrimeImage);
                
                 return new ContentResult

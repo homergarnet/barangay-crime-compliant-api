@@ -93,13 +93,12 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/update-crime-status")]
         public IActionResult UpdateCrimeStatus(
             [FromQuery] long id,
-            [FromQuery] long userId,
             [FromQuery] string status
         )
         {
 
             try {
-
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, userId, status);
                
                 return new ContentResult
@@ -129,13 +128,13 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/update-crime-resolution")]
         public IActionResult UpdateCrimeResolution(
             [FromQuery] long id,
-            [FromQuery] long userId,
             [FromQuery] string resolution
         )
         {
 
             try {
-
+                
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var updateCrimeImage = _iManageCrimeService.UpdateCrimeResolution(id, userId, resolution);
                
                 return new ContentResult

@@ -30,6 +30,8 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                announcementInfo.UserId = userId;
                 var createAnnouncement = _iAnnouncementService.CreateAnnouncement(announcementInfo);
                
                 return new ContentResult
@@ -92,12 +94,14 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/update-announcement")]
         public IActionResult UpdateAnnouncement(
             [FromQuery] long id,
-            [FromQuery] long userId,
+
             [FromBody] AnnouncementDto announcementInfo
         )
         {
 
             try {
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
 
                 var updateAnnouncement = _iAnnouncementService.UpdateAnnouncement(id, userId, announcementInfo);
                
@@ -126,14 +130,14 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpPut]
         [Route("api/soft-remove-announcement")]
         public IActionResult SoftRemoveAnnouncement(
-            [FromQuery] long id,
-            [FromQuery] long userId
+            [FromQuery] long id
             
         )
         {
 
             try {
 
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var softRemoveAnnouncement = _iAnnouncementService.SoftRemoveAnnouncement(id, userId);
                
                 return new ContentResult
