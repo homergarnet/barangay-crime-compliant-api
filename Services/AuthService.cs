@@ -54,29 +54,7 @@ namespace barangay_crime_compliant_api.Services
                 user.UserType = item.UserType;
                 db.Users.Add(user);
                 db.SaveChanges();
-                // User Claims
-                var claims = new List<Claim>
-                {
-                    new Claim("Username", item.Username.ToString()),
-                    new Claim("FirstName", item.FirstName.ToString()),
-                    new Claim("MiddleName", item.MiddleName.ToString()),
-                    new Claim("LastName", item.LastName.ToString()),
-                    
-                };
-
-                // Encrypt credentials
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-                var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
-                    configuration["Jwt:Issuer"],
-                    claims,
-                    expires: DateTime.Now.AddHours(8766), // Set to 1 year
-                    signingCredentials: credentials);
-
-                // Generate JWT
-                var token = new JwtSecurityTokenHandler().WriteToken(auth);
-                item.Token = token;
+               
                 return "Successfully Created Account";
             }
 
@@ -157,30 +135,7 @@ namespace barangay_crime_compliant_api.Services
             
             db.Users.Add(user);
             db.SaveChanges();
-            // User Claims
-            var claims = new List<Claim>
-            {
 
-                new Claim("Username", Username.ToString()),
-                new Claim("FirstName", FirstName.ToString()),
-                new Claim("MiddleName", MiddleName.ToString()),
-                new Claim("LastName", LastName.ToString()),
-                
-            };
-
-            // Encrypt credentials
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var auth = new JwtSecurityToken(configuration["Jwt:Issuer"],
-                configuration["Jwt:Issuer"],
-                claims,
-                expires: DateTime.Now.AddHours(8766), // Set to 1 year
-                signingCredentials: credentials);
-
-            // Generate JWT
-            var token = new JwtSecurityTokenHandler().WriteToken(auth);
-                
             return "Create Personal Info Created Successfully";
 
         }
@@ -201,7 +156,7 @@ namespace barangay_crime_compliant_api.Services
                     // User Claims
                     var claims = new List<Claim>
                     {
-
+                        new Claim("UserId", user.Id.ToString()),
                         new Claim("Username", user.Username.ToString()),
                         new Claim("FirstName", user.FirstName.ToString()),
                         new Claim("MiddleName", user.MiddleName.ToString()),

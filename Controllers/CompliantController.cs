@@ -1,6 +1,7 @@
 using System.Text.Json;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace barangay_crime_compliant_api.Controllers
@@ -13,6 +14,7 @@ namespace barangay_crime_compliant_api.Controllers
             _iCompliantService = iCompliantService;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/create-case-report")]
         public async Task<IActionResult> CreateCaseReport([FromForm] List<IFormFile> CrimeImage, [FromForm] long UserId, [FromForm] string Description, [FromForm] DateTime DateTimeCreated, [FromForm] long CrimeCompliantId)
@@ -53,6 +55,8 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+
+        [Authorize]
         [HttpGet]
         [Route("api/get-crime-compliant")]
         public IActionResult GetCrimeCompliantList(
@@ -86,6 +90,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-crime-image")]
         public IActionResult GetCrimeImageList(
@@ -120,6 +125,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/update-crime-image")]
         public IActionResult UpdateCrimeImage(

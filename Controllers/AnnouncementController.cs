@@ -1,6 +1,7 @@
 using System.Text.Json;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace barangay_crime_compliant_api.Controllers
@@ -20,6 +21,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/create-announcement")]
         public IActionResult CreateAccount([FromBody] AnnouncementDto announcementInfo)
@@ -51,6 +53,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-announcement")]
         public IActionResult GetAnnouncementList(
@@ -84,6 +87,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/update-announcement")]
         public IActionResult UpdateAnnouncement(
@@ -118,6 +122,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/soft-remove-announcement")]
         public IActionResult SoftRemoveAnnouncement(

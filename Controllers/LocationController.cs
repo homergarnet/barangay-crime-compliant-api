@@ -3,6 +3,7 @@
 using System.Text.Json;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace barangay_crime_compliant_api.Controllers
@@ -21,6 +22,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/create-location")]
         public IActionResult CreateLocation([FromBody] LocationDto locationInfo)
@@ -52,6 +54,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-location")]
         public IActionResult GetLocationList(

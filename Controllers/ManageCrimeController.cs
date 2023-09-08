@@ -1,6 +1,7 @@
 using System.Text.Json;
 using barangay_crime_complaint_api.Models;
 using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace barangay_crime_compliant_api.Controllers
@@ -16,6 +17,7 @@ namespace barangay_crime_compliant_api.Controllers
         
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-manage-crime")]
         public IActionResult GetManageCrimeList(
@@ -50,6 +52,8 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+
+        [Authorize]
         [HttpGet]
         [Route("api/get-manage-crime-by-id")]
         public IActionResult GetManageCrimeById(
@@ -83,6 +87,8 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+
+        [Authorize]
         [HttpPut]
         [Route("api/update-crime-status")]
         public IActionResult UpdateCrimeStatus(
@@ -117,6 +123,8 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+
+        [Authorize]
         [HttpPut]
         [Route("api/update-crime-resolution")]
         public IActionResult UpdateCrimeResolution(

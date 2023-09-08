@@ -4,6 +4,7 @@ using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 namespace barangay_crime_compliant_api.Controllers
 {
     public class ManageReportController : ControllerBase 
@@ -17,6 +18,7 @@ namespace barangay_crime_compliant_api.Controllers
             this.db = db;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/get-manage-incident-report")]
         public IActionResult GetManageIncidentReport(
