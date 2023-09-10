@@ -288,6 +288,7 @@ namespace barangay_crime_compliant_api.Services
                 userPersonalInfo.Phone = userPersonalInfoRes.Phone;
                 userPersonalInfo.ValidIdImage = userPersonalInfoRes.ValidId;
                 userPersonalInfo.SelfieIdImage = userPersonalInfoRes.Selfie;
+                userPersonalInfo.UserType = userPersonalInfoRes.UserType;
 
             }
             

@@ -14,9 +14,16 @@ namespace barangay_crime_compliant_api.Services
             this.configuration = configuration;
             this.db = db;
         }
-        public List<ManageCrimeDto> GetManageCrimeList(string reportType, string keyword, int page, int pageSize)
+        public List<ManageCrimeDto> GetManageCrimeList(string reportType, string status, long barangayId, string keyword, int page, int pageSize)
         {
+
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
+            var barangayInfo = db.Users.Where(z => z.Id == barangayId).FirstOrDefault();
+            if(barangayId != 0L) 
+            {
+                query = query.Where(z => z.User.BrgyCode == barangayInfo.BrgyCode);
+            }
+            
             var locationQuery = db.Locations;
             var barangayQuery = db.PhBrgies;
             List<ManageCrimeDto> manageCrimeList = new List<ManageCrimeDto>();
@@ -53,6 +60,16 @@ namespace barangay_crime_compliant_api.Services
                     {
                         query = query.Where(z => z.CrimeCompliant.Type.Equals("index crime") || z.CrimeCompliant.Type.Equals("non index crime"));
                     }
+                }
+
+                if(status != null)
+                {
+                    
+                    if(!string.IsNullOrEmpty(status) && status.Equals(status))
+                    {
+                        query = query.Where(z => z.Status.Equals(status));
+                    }
+
                 }
 
             }
@@ -132,13 +149,13 @@ namespace barangay_crime_compliant_api.Services
             return manageCrimeRes;
         }
 
-        public string UpdateCrimeStatus(long id, long userId, string status)
+        public string UpdateCrimeStatus(long id, string status)
         {
-            var hasCrimeStatus = db.CrimeCompliantReports.Any(z => z.Id == id && z.UserId == userId);
+            var hasCrimeStatus = db.CrimeCompliantReports.Any(z => z.Id == id);
 
             if(hasCrimeStatus) 
             {
-                var crimeStatus = db.CrimeCompliantReports.Where(z => z.Id == id && z.UserId == userId).First();
+                var crimeStatus = db.CrimeCompliantReports.Where(z => z.Id == id).First();
                 crimeStatus.Status = status;
                 crimeStatus.DateTimeUpdated = DateTime.Now;
                 db.SaveChanges();

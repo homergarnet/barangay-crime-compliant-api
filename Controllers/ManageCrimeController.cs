@@ -10,10 +10,12 @@ namespace barangay_crime_compliant_api.Controllers
     {
 
         private readonly IManageCrimeService _iManageCrimeService;
+        private readonly IAuthService _iAuthService;
  
-        public ManageCrimeController(IManageCrimeService iManageCrimeService)
+        public ManageCrimeController(IManageCrimeService iManageCrimeService, IAuthService iAuthService)
         {
             _iManageCrimeService = iManageCrimeService;
+            _iAuthService = iAuthService;
         
         }
 
@@ -22,6 +24,7 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/get-manage-crime")]
         public IActionResult GetManageCrimeList(
             [FromQuery] string reportType,
+            [FromQuery] string status,
             [FromQuery] string keyword, [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10
         )
@@ -29,14 +32,34 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, keyword, page, pageSize);
-               
-                return new ContentResult
+                var barangayId = Convert.ToInt64(User.FindFirst("UserId").Value);
+
+                var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(barangayId);
+
+                if(getUserPersonalInfo.UserType.Equals("barangay"))
                 {
-                    StatusCode = 200,
-                    ContentType = "application/json",
-                    Content = JsonSerializer.Serialize(getManageCrimeList)
-                };
+                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, barangayId, keyword, page, pageSize);
+                
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(getManageCrimeList)
+                    };
+                }
+                //ADMIN
+                else
+                {
+                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, 0L, keyword, page, pageSize);
+                
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(getManageCrimeList)
+                    };
+                }
+
 
             }
 
@@ -98,14 +121,14 @@ namespace barangay_crime_compliant_api.Controllers
         {
 
             try {
-                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
-                var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, userId, status);
+       
+                var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, status);
                
                 return new ContentResult
                 {
                     StatusCode = 200,
                     ContentType = "application/json",
-                    Content = updateCrimeImage
+                    Content = JsonSerializer.Serialize(updateCrimeImage)
                 };
 
             }

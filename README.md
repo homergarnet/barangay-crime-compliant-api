@@ -17,3 +17,5 @@ Type of Statuses:
 3.) resolved
 4.) in progress
 5.) investigation
+6.) completed
+7.) closed

@@ -5,6 +5,7 @@ using System.Text.Json;
 using barangay_crime_complaint_api.Models;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -210,6 +211,40 @@ namespace barangay_crime_compliant_api.Controllers
                     StatusCode = 200,
                     ContentType = "application/json",
                     Content = JsonSerializer.Serialize(getUserPersonalInfoList)
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("api/get-current-user-personal-info")]
+        public IActionResult GetUserPersonalInfoById(
+        )
+        {
+
+            try {
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+
+                var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
+               
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getUserPersonalInfo)
                 };
 
             }
