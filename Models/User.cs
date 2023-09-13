@@ -9,8 +9,6 @@ namespace barangay_crime_complaint_api.Models
         {
             Announcements = new HashSet<Announcement>();
             CrimeCompliantReports = new HashSet<CrimeCompliantReport>();
-            Locations = new HashSet<Location>();
-            Reports = new HashSet<Report>();
         }
 
         public long Id { get; set; }
@@ -43,7 +41,5 @@ namespace barangay_crime_complaint_api.Models
         public virtual PhProvince? ProvinceCodeNavigation { get; set; }
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<CrimeCompliantReport> CrimeCompliantReports { get; set; }
-        public virtual ICollection<Location> Locations { get; set; }
-        public virtual ICollection<Report> Reports { get; set; }
     }
 }

@@ -25,7 +25,6 @@ namespace barangay_crime_complaint_api.Models
         public virtual DbSet<PhCity> PhCities { get; set; } = null!;
         public virtual DbSet<PhProvZone> PhProvZones { get; set; } = null!;
         public virtual DbSet<PhProvince> PhProvinces { get; set; } = null!;
-        public virtual DbSet<Report> Reports { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -138,11 +137,6 @@ namespace barangay_crime_complaint_api.Models
                     .WithMany(p => p.Locations)
                     .HasForeignKey(d => d.CrimeCompliantReportId)
                     .HasConstraintName("FK_Location_CrimeCompliantReport");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Locations)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK_Location_User");
             });
 
             modelBuilder.Entity<PhBrgy>(entity =>
@@ -249,24 +243,6 @@ namespace barangay_crime_complaint_api.Models
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("regionCode");
-            });
-
-            modelBuilder.Entity<Report>(entity =>
-            {
-                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
-
-                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
-
-                entity.Property(e => e.Description).IsUnicode(false);
-
-                entity.Property(e => e.Status)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Reports)
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK_Reports_User");
             });
 
             modelBuilder.Entity<User>(entity =>

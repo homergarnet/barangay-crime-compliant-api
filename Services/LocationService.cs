@@ -23,7 +23,6 @@ namespace barangay_crime_compliant_api.Services
             location.Long = locationInfo.Long;
             location.Description = locationInfo.Description;
             location.DateTimeCreated = DateTime.Now;
-            location.UserId = locationInfo.UserId;
             location.CrimeCompliantReportId = locationInfo.CrimeCompliantReportId;
             db.Locations.Add(location);
             db.SaveChanges();
@@ -53,7 +52,6 @@ namespace barangay_crime_compliant_api.Services
                 locationDto.Description = location.Description;
                 locationDto.DateTimeCreated = location.DateTimeCreated;
                 locationDto.DateTimeUpdated = location.DateTimeUpdated;
-                locationDto.UserId = location.UserId;
                 locationDto.CrimeCompliantReportId = location.CrimeCompliantReportId;
                 locationList.Add(locationDto);
                 
