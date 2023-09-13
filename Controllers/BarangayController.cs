@@ -1,68 +1,55 @@
+using System.Text.Json;
+using barangay_crime_compliant_api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace barangay_crime_compliant_api.Controllers
 {
     public class BarangayController : ControllerBase
     {
+
+        private readonly IBarangayService _iBarangayService;
         
-        public BarangayController() 
+        public BarangayController(IBarangayService iBarangayService) 
         {
-            
+
+            _iBarangayService = iBarangayService;
+
         }
 
-        // [HttpPost]
-        // [Route("api/create-case-report")]
-        // public async Task<IActionResult> CreateCaseReport([FromForm] ImageUploadModel model)
-        // {
-        //     if (model.Image == null || model.Image.Length == 0)
-        //     {
-        //         return BadRequest("Invalid image data");
-        //     }
+        [Authorize]
+        [HttpGet]
+        [Route("api/get-barangay-by-code")]
+        public IActionResult GetBarangayList(
+            [FromQuery] string keyword, [FromQuery] int page = 1, 
+            [FromQuery] int pageSize = 10
+        )
+        {
 
-        //     using (var memoryStream = new MemoryStream())
-        //     {
-        //         await model.Image.CopyToAsync(memoryStream);
-        //         var image = new Image
-        //         {
-        //             Title = model.Title,
-        //             Data = memoryStream.ToArray()
-        //         };
+            try {
 
-        //         await _dbContext.Images.AddAsync(image);
-        //         await _dbContext.SaveChangesAsync();
-
-        //         return Ok(image.Id);
-        //     }
-        // }   
-
-        // [HttpPost]
-        // [Route("api/create-case-report")]
-        // public IActionResult CreateCaseReport([FromBody] UserDto userInfo)
-        // {
-        //     try {
-
-        //         var user = _iAuthService.CreateAccount(userInfo);
+                var getBarangayList = _iBarangayService.GetBarangayNameByCodeList(keyword, page, pageSize);
                
-        //         return new ContentResult
-        //         {
-        //             StatusCode = 200,
-        //             ContentType = "application/json",
-        //             Content = user.Token
-        //         };
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getBarangayList)
+                };
 
-        //     }
+            }
 
-        //     catch (Exception ex)
-        //     {
-        //         return new ContentResult
-        //         {
-        //             StatusCode = 500,
-        //             ContentType = "text/html",
-        //             Content = Common.GetFormattedExceptionMessage(ex)
-        //         };
-        //     }
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
 
-        // }
+        }
 
     }
 }

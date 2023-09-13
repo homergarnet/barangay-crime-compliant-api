@@ -1,4 +1,5 @@
 using System.Text.Json;
+using barangay_crime_compliant_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,11 @@ namespace barangay_crime_compliant_api.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly IDashboardService _iDashboardService;
-        public DashboardController(IDashboardService iDashboardService)
+        private readonly IAuthService _iAuthService;
+        public DashboardController(IDashboardService iDashboardService, IAuthService iAuthService)
         {
             _iDashboardService = iDashboardService;
+            _iAuthService = iAuthService;
         }
 
         [Authorize]
@@ -20,14 +23,36 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var totalDashboardCount = _iDashboardService.TotalDashboardCardCount();
-               
-                return new ContentResult
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                
+                var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
+        
+                if(getUserPersonalInfo.UserType.Equals("admin")) 
                 {
-                    StatusCode = 200,
-                    ContentType = "application/json",
-                    Content = JsonSerializer.Serialize(totalDashboardCount)
-                };
+                    var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(0);
+                
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(totalDashboardCount)
+                    };
+                }
+                //barangay
+                else
+                {
+
+                    var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(userId,getUserPersonalInfo.BrgyCode);
+                
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(totalDashboardCount)
+                    };
+
+                }
+
 
             }
 

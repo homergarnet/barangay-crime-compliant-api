@@ -107,6 +107,7 @@ namespace barangay_crime_complaint_api
             services.AddTransient<IManageReportService, ManageReportService>();
             services.AddTransient<IManageCrimeService, ManageCrimeService>();
             services.AddTransient<IReportsService, ReportsService>();
+            services.AddTransient<IBarangayService, BarangayService>();
             
             services.Configure<FormOptions>(options =>
             {

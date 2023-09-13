@@ -1,6 +1,15 @@
 namespace barangay_crime_compliant_api.DTOS
 {
 
+    public class BarangayDto{
+        
+        public string BarangayCode { get;set; }
+        public string BarangayName { get;set; }
+        public string CityCode { get;set; }
+        public string ZipCode { get;set; }
+        
+    }
+
     public class CompliantCrimeDto
     {
 

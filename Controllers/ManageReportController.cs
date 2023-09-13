@@ -22,7 +22,11 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpGet]
         [Route("api/get-manage-incident-report")]
         public IActionResult GetManageIncidentReport(
-            [FromBody] ManageReportDto manageReportInfo
+
+            [FromQuery] DateTime date, [FromQuery] int year, 
+            [FromQuery] TimeSpan timeStart,
+            [FromQuery] TimeSpan timeEnd
+            
         )
         {
 
@@ -30,21 +34,21 @@ namespace barangay_crime_compliant_api.Controllers
 
                 var crimeCompliantList = db.CrimeCompliants.ToList();
                 IQueryable<CrimeCompliantReport> crimeCompliantReport;
-                if(manageReportInfo.TimeStart != null && manageReportInfo.TimeEnd != null)
+                if(timeStart != TimeSpan.Zero && timeEnd != TimeSpan.Zero)
                 {
-                    crimeCompliantReport = db.CrimeCompliantReports.Where(z => z.DateTimeCreated.Value.Date == manageReportInfo.Date.Date && z.DateTimeCreated.Value.Year == manageReportInfo.Year && z.DateTimeCreated.Value.TimeOfDay >= manageReportInfo.TimeStart && z.DateTimeCreated.Value.TimeOfDay <= manageReportInfo.TimeEnd);
+                    crimeCompliantReport = db.CrimeCompliantReports.Where(z => z.DateTimeCreated.Value.Date == date.Date && z.DateTimeCreated.Value.Year == year && z.DateTimeCreated.Value.TimeOfDay >= timeStart && z.DateTimeCreated.Value.TimeOfDay <= timeEnd);
                 } 
                 else 
                 {
-                    crimeCompliantReport = db.CrimeCompliantReports.Where(z => z.DateTimeCreated.Value.Date == manageReportInfo.Date.Date && z.DateTimeCreated.Value.Year == manageReportInfo.Year);
+                    crimeCompliantReport = db.CrimeCompliantReports.Where(z => z.DateTimeCreated.Value.Date == date.Date && z.DateTimeCreated.Value.Year == year);
                 }
                 
 
-                var incidentReportedList = new List<object>();
-                var incidentResolvedList = new List<object>();
-                var incidentUnderInvestigationList = new List<object>();
+                var incidentReportedList = new List<int>();
+                var incidentResolvedList = new List<int>();
+                var incidentUnderInvestigationList = new List<int>();
                 
-                var getManageIncidentReportList = new List<object>();
+                var getManageIncidentReportList = new ManageReportDto();
 
                 foreach(var crimeCompliant in crimeCompliantList)
                 {
@@ -56,20 +60,9 @@ namespace barangay_crime_compliant_api.Controllers
                     incidentUnderInvestigationList.Add(incidentUnderInvestigationRes);
                 }
 
-                foreach(var item in incidentReportedList)
-                {
-                    getManageIncidentReportList.Add(item);
-                }
-
-                foreach(var item in incidentResolvedList)
-                {
-                    getManageIncidentReportList.Add(item);
-                }
-
-                foreach(var item in incidentUnderInvestigationList)
-                {
-                    getManageIncidentReportList.Add(item);
-                }
+                getManageIncidentReportList.IncidentsReported = incidentReportedList;
+                getManageIncidentReportList.IncidentsResolved = incidentResolvedList;
+                getManageIncidentReportList.IncidentsUnderInvestigation = incidentUnderInvestigationList;
 
                 return new ContentResult
                 {

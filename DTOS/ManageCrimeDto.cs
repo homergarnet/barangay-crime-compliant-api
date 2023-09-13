@@ -8,7 +8,7 @@ namespace barangay_crime_compliant_api.DTOS
         public string ReportIdStr { get;set; }
         public string Barangay { get;set; }
         public DateTime? Date { get;set; }
-        public TimeSpan? Time { get;set; }
+        public string? Time { get;set; }
         public decimal? Lat { get;set; }
         public decimal? Long { get;set; }
         public string Category { get;set; }
@@ -17,6 +17,7 @@ namespace barangay_crime_compliant_api.DTOS
         public string ReporterContact { get;set; }
         public string Status { get;set; }
         public string Resolution { get;set; }
+        public DateTime? DateResolved { get;set; }
 
     }
 

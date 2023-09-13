@@ -215,7 +215,7 @@ namespace barangay_crime_compliant_api.Services
 
         public List<UserDto> GetUserPersonalInfoList(string keyword, int page, int pageSize)
         {
-            IQueryable<User> query = db.Users;
+            IQueryable<User> query = db.Users.Where(z => z.UserType.Equals("compliant"));
 
             var provinceQuery = db.PhProvinces;
             var cityQuery = db.PhCities;
@@ -227,7 +227,7 @@ namespace barangay_crime_compliant_api.Services
                 query = query.Where(
                     z => z.FirstName.Contains(keyword) || z.MiddleName.Contains(keyword) ||
                     z.LastName.Contains(keyword) || z.ProvinceCodeNavigation.ProvDesc.Contains(keyword) ||
-                    z.CityCodeNavigation.CityDescription.Contains(keyword) || 
+                    z.CityCodeNavigation.CityDescription.Contains(keyword) || z.BrgyCodeNavigation.BrgyCode.Contains(keyword) ||
                     z.BrgyCodeNavigation.BrgyName.Contains(keyword) || z.Phone.Contains(keyword)
                 );
             }
@@ -243,16 +243,19 @@ namespace barangay_crime_compliant_api.Services
 
                 var userPersonalInfoDto = new UserDto();
                 userPersonalInfoDto.Id = userPersonalInfo.Id;
-
                 userPersonalInfoDto.FirstName = userPersonalInfo.FirstName;
                 userPersonalInfoDto.MiddleName = userPersonalInfo.MiddleName;
                 userPersonalInfoDto.LastName = userPersonalInfo.LastName;
-              
                 userPersonalInfoDto.ProvinceName = userPersonalInfo.ProvinceCodeNavigation.ProvDesc;
                 userPersonalInfoDto.CityName = userPersonalInfo.CityCodeNavigation.CityDescription;
                 userPersonalInfoDto.BarangayName = userPersonalInfo.BrgyCodeNavigation.BrgyName;
                 userPersonalInfoDto.Phone = userPersonalInfo.Phone;
-              
+                userPersonalInfoDto.ValidIdImage = userPersonalInfo.ValidId;
+                userPersonalInfoDto.SelfieIdImage = userPersonalInfo.Selfie;
+                userPersonalInfoDto.HouseNo = userPersonalInfo.HouseNo;
+                userPersonalInfoDto.Street = userPersonalInfo.Street;
+                userPersonalInfoDto.Village = userPersonalInfo.Village;
+                userPersonalInfoDto.UnitFloor = userPersonalInfo.UnitFloor;
                 getUserPersonalInfoList.Add(userPersonalInfoDto);
                 
             }
@@ -289,6 +292,9 @@ namespace barangay_crime_compliant_api.Services
                 userPersonalInfo.ValidIdImage = userPersonalInfoRes.ValidId;
                 userPersonalInfo.SelfieIdImage = userPersonalInfoRes.Selfie;
                 userPersonalInfo.UserType = userPersonalInfoRes.UserType;
+                userPersonalInfo.ProvinceCode = userPersonalInfoRes.ProvinceCode;
+                userPersonalInfo.CityCode = userPersonalInfoRes.CityCode;
+                userPersonalInfo.BrgyCode = userPersonalInfoRes.BrgyCode;
 
             }
             

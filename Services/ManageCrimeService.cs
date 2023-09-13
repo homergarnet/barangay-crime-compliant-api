@@ -32,18 +32,40 @@ namespace barangay_crime_compliant_api.Services
 
                 if(reportType != null)
                 {
-                    if(!string.IsNullOrEmpty(reportType) && reportType.Equals("compliant types"))
+                    //compliant types
+                    if(!string.IsNullOrEmpty(reportType) && reportType.Contains("compliant"))
                     {
                         query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Equals("compliant types"));
                     }
-                    if(reportType.Equals("index crime") || reportType.Equals("non index crime"))
+                    //non index crime, index crime
+                    if(reportType.Contains("crime"))
                     {
-                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Equals("index crime") || z.CrimeCompliant.Type.Equals("non index crime"));
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Contains("crime"));
                     }
                     else
                     {
                         query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword));
                     }
+                }
+
+                if(status != null)
+                {
+
+                    if(!string.IsNullOrEmpty(status) && !status.Equals("completed") && !status.Equals("closed"))
+                    {
+                        query = query.Where(z => !z.Status.Equals("completed") && !z.Status.Equals("closed"));
+                    }
+
+                    else if(!string.IsNullOrEmpty(status) && status.Equals("completed"))
+                    {
+                        query = query.Where(z => z.Status.Equals(status));
+                    }
+
+                    else if(!string.IsNullOrEmpty(status) && status.Equals("closed"))
+                    {
+                        query = query.Where(z => z.Status.Equals(status));
+                    }
+
                 }
 
             }
@@ -52,20 +74,32 @@ namespace barangay_crime_compliant_api.Services
 
                 if(reportType != null)
                 {
-                    if(!string.IsNullOrEmpty(reportType) && reportType.Equals("compliant types"))
+                    //compliant types
+                    if(!string.IsNullOrEmpty(reportType) && reportType.Contains("compliant"))
                     {
-                        query = query.Where(z => z.CrimeCompliant.Type.Equals(reportType));
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Equals("compliant types"));
                     }
-                    if(reportType.Equals("index crime") || reportType.Equals("non index crime"))
+                    //non index crime, index crime
+                    if(reportType.Contains("crime"))
                     {
-                        query = query.Where(z => z.CrimeCompliant.Type.Equals("index crime") || z.CrimeCompliant.Type.Equals("non index crime"));
+                        query = query.Where(z => z.Description.Contains(keyword) || z.Status.Contains(keyword) || z.CrimeCompliant.Type.Contains("crime"));
                     }
                 }
 
                 if(status != null)
                 {
-                    
-                    if(!string.IsNullOrEmpty(status) && status.Equals(status))
+
+                    if(!string.IsNullOrEmpty(status) && !status.Equals("completed") && !status.Equals("closed"))
+                    {
+                        query = query.Where(z => !z.Status.Equals("completed") && !z.Status.Equals("closed"));
+                    }
+
+                    else if(!string.IsNullOrEmpty(status) && status.Equals("completed"))
+                    {
+                        query = query.Where(z => z.Status.Equals(status));
+                    }
+
+                    else if(!string.IsNullOrEmpty(status) && status.Equals("closed"))
                     {
                         query = query.Where(z => z.Status.Equals(status));
                     }
@@ -79,14 +113,15 @@ namespace barangay_crime_compliant_api.Services
 
             foreach(var manageCrime in manageCrimeReportRes)
             {
-
+                DateTime dateTimeCreated = manageCrime.DateTimeCreated.Value;
+                
                 var manageCrimeDto = new ManageCrimeDto();
                 string formattedIdValue = manageCrime.Id.ToString("D3");
                 manageCrimeDto.ReportId = manageCrime.Id;
                 manageCrimeDto.ReportIdStr = formattedIdValue;
                 manageCrimeDto.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrime.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeDto.Date = manageCrime.DateTimeCreated.Value;
-                manageCrimeDto.Time = manageCrime.DateTimeCreated.Value.TimeOfDay;
+                manageCrimeDto.Time = dateTimeCreated.ToString("HH:mm:ss");
                 manageCrimeDto.Lat =  locationQuery.Where(z => z.CrimeCompliantReportId == manageCrime.Id).Select(z => z.Lat).FirstOrDefault();
                 manageCrimeDto.Long = locationQuery.Where(z => z.CrimeCompliantReportId == manageCrime.Id).Select(z => z.Long).FirstOrDefault();
                 manageCrimeDto.Category = manageCrime.CrimeCompliant.Title;
@@ -95,6 +130,7 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.ReporterContact = manageCrime.User.Phone;
                 manageCrimeDto.Status = manageCrime.Status;
                 manageCrimeDto.Resolution = manageCrime.Resolution;
+                manageCrimeDto.DateResolved = manageCrime.DateResolved != null ? manageCrime.DateResolved.Value : null;
                 manageCrimeList.Add(manageCrimeDto);
                 
             }
@@ -127,13 +163,15 @@ namespace barangay_crime_compliant_api.Services
             if(hasManageCrimeReportRes) 
             {
                 
+                
                 var manageCrimeReportRes = query.Include(z => z.User).Include(z => z.CrimeCompliant).Where(z => z.Id == id).FirstOrDefault();
+                DateTime dateTimeCreated = manageCrimeReportRes.DateTimeCreated.Value;
                 string formattedIdValue = manageCrimeReportRes.Id.ToString("D3");
                 manageCrimeRes.ReportId = manageCrimeReportRes.Id;
                 manageCrimeRes.ReportIdStr = formattedIdValue;
                 manageCrimeRes.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrimeReportRes.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeRes.Date = manageCrimeReportRes.DateTimeCreated.Value;
-                manageCrimeRes.Time = manageCrimeReportRes.DateTimeCreated.Value.TimeOfDay;
+                manageCrimeRes.Time = dateTimeCreated.ToString("HH:mm:ss");
                 manageCrimeRes.Lat =  locationQuery.Where(z => z.CrimeCompliantReportId == manageCrimeReportRes.Id).Select(z => z.Lat).FirstOrDefault();
                 manageCrimeRes.Long = locationQuery.Where(z => z.CrimeCompliantReportId == manageCrimeReportRes.Id).Select(z => z.Long).FirstOrDefault();
                 manageCrimeRes.Category = manageCrimeReportRes.CrimeCompliant.Title;
