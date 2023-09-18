@@ -71,8 +71,8 @@ namespace barangay_crime_compliant_api.Controllers
             [FromForm] string Phone, [FromForm] string HouseNo, [FromForm] string Street,
             [FromForm] string Village, [FromForm] string UnitFloor, [FromForm] string Building,
             [FromForm] string ProvinceCode, [FromForm] string CityCode, [FromForm] string BrgyCode,
-            [FromForm] string ZipCode, [FromForm] DateTime DateCreated, [FromForm] string UserType
-
+            [FromForm] string ZipCode, [FromForm] DateTime DateCreated, [FromForm] string UserType,
+            [FromForm] string ResidencyType
         )
         {
             try {
@@ -101,7 +101,7 @@ namespace barangay_crime_compliant_api.Controllers
                 var user = _iAuthService.CreatePersonalInfo(
                     ValidId, SelfieId, Username, Password, FirstName, MiddleName, LastName, BirthDate,
                     Gender, Phone, HouseNo, Street, Village, UnitFloor, Building, ProvinceCode, CityCode,
-                    BrgyCode, ZipCode, DateCreated, UserType
+                    BrgyCode, ZipCode, DateCreated, UserType, ResidencyType
                 );
                
                 return new ContentResult

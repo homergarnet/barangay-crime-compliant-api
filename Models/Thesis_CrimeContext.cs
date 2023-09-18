@@ -303,6 +303,10 @@ namespace barangay_crime_complaint_api.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ResidencyType)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Selfie).IsUnicode(false);
 
                 entity.Property(e => e.Street)
