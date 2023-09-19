@@ -14,14 +14,19 @@ namespace barangay_crime_compliant_api.Services
             this.configuration = configuration;
             this.db = db;
         }
-        public List<ManageCrimeDto> GetManageCrimeList(string reportType, string status, long barangayId, string keyword, int page, int pageSize)
+        public List<ManageCrimeDto> GetManageCrimeList(string reportType, string status, long userId, string userType, string keyword, int page, int pageSize)
         {
 
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
-            var barangayInfo = db.Users.Where(z => z.Id == barangayId).FirstOrDefault();
-            if(barangayId != 0L) 
+            var barangayInfo = db.Users.Where(z => z.Id == userId).FirstOrDefault();
+            if(userId != 0L && userType.Equals("barangay")) 
             {
                 query = query.Where(z => z.User.BrgyCode == barangayInfo.BrgyCode);
+            }
+
+            if(userId != 0L && userType.Equals("compliant")) 
+            {
+                query = query.Where(z => z.UserId == userId);
             }
             
             var locationQuery = db.Locations;

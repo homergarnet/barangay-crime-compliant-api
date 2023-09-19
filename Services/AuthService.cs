@@ -162,6 +162,7 @@ namespace barangay_crime_compliant_api.Services
                         new Claim("FirstName", user.FirstName.ToString()),
                         new Claim("MiddleName", user.MiddleName.ToString()),
                         new Claim("LastName", user.LastName.ToString()),
+                        new Claim("UserType", user.UserType.ToString()),
                         
                     };
 

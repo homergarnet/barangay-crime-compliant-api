@@ -32,13 +32,13 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var barangayId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                var userType = Convert.ToString(User.FindFirst("UserType").Value);
 
-                var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(barangayId);
 
-                if(getUserPersonalInfo.UserType.Equals("barangay"))
+                if(userType.Equals("barangay") || userType.Equals("compliant"))
                 {
-                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, barangayId, keyword, page, pageSize);
+                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, userId, userType, keyword, page, pageSize);
                 
                     return new ContentResult
                     {
@@ -47,10 +47,11 @@ namespace barangay_crime_compliant_api.Controllers
                         Content = JsonSerializer.Serialize(getManageCrimeList)
                     };
                 }
+                
                 //ADMIN
                 else
                 {
-                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, 0L, keyword, page, pageSize);
+                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, 0L,userType, keyword, page, pageSize);
                 
                     return new ContentResult
                     {
