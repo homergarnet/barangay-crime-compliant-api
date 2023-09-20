@@ -103,12 +103,21 @@ namespace barangay_crime_compliant_api.Controllers
                     Gender, Phone, HouseNo, Street, Village, UnitFloor, Building, ProvinceCode, CityCode,
                     BrgyCode, ZipCode, DateCreated, UserType, ResidencyType, Email
                 );
-               
+
+                if(user == "User Already Exist")
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 500,
+                        ContentType = "application/json",
+                        Content = user
+                    };
+                }
                 return new ContentResult
                 {
                     StatusCode = 200,
                     ContentType = "application/json",
-                    Content = user
+                    Content = JsonSerializer.Serialize(true)
                 };
 
             }

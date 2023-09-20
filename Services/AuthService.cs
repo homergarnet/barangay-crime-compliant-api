@@ -73,6 +73,12 @@ namespace barangay_crime_compliant_api.Services
             
             User user = new User();
             // user.Id = item.Id;
+            // user.Id = item.Id;
+            var userExist = db.Users.Any(z => z.Username == Username);
+            if(userExist)
+            {
+                return "User Already Exist";
+            }
             user.Username = Username;
             user.Password = BCrypt.Net.BCrypt.HashPassword(Password);
             user.FirstName = FirstName;
