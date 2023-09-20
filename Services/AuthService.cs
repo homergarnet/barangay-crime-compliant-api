@@ -67,7 +67,7 @@ namespace barangay_crime_compliant_api.Services
             string MiddleName, string LastName, DateTime BirthDate, string Gender, string Phone, 
             string HouseNo, string Street, string Village, string UnitFloor, string Building, 
             string ProvinceCode, string CityCode, string BrgyCode, string ZipCode, DateTime DateCreated, 
-            string UserType, string ResidencyType
+            string UserType, string ResidencyType, string Email
         )
         {
             
@@ -94,6 +94,7 @@ namespace barangay_crime_compliant_api.Services
             user.DateUpdated =DateTime.Now;
             user.UserType = UserType;
             user.ResidencyType = ResidencyType;
+            user.Email = Email;
 
             // Define a target directory to save the uploaded file
             var targetDirectory = "uploads"; // Change this to your desired directory

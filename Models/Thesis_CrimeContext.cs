@@ -267,6 +267,10 @@ namespace barangay_crime_complaint_api.Models
 
                 entity.Property(e => e.DateUpdated).HasColumnType("datetime");
 
+                entity.Property(e => e.Email)
+                    .HasMaxLength(320)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(50)
                     .IsUnicode(false);

@@ -36,6 +36,7 @@ namespace barangay_crime_complaint_api.Models
         public string? ValidId { get; set; }
         public string? Selfie { get; set; }
         public string? ResidencyType { get; set; }
+        public string? Email { get; set; }
 
         public virtual PhBrgy? BrgyCodeNavigation { get; set; }
         public virtual PhCity? CityCodeNavigation { get; set; }
