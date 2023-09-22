@@ -27,7 +27,7 @@ namespace barangay_crime_compliant_api.Controllers
                 
                 var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
         
-                if(getUserPersonalInfo.UserType.Equals("admin")) 
+                if(getUserPersonalInfo.UserType.Equals("admin") || getUserPersonalInfo.UserType.Equals("police")) 
                 {
                     var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(0);
                 

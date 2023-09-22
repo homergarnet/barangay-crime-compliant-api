@@ -65,13 +65,71 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var getLocationList = _iLocationService.GetLocationList(keyword, page, pageSize);
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                var userType = Convert.ToString(User.FindFirst("UserType").Value);
+                
+                
+                if(userType.Equals("barangay") || userType.Equals("compliant"))
+                {
+
+                    var getLocationList = _iLocationService.GetLocationList(userId, userType, keyword, page, pageSize);
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(getLocationList)
+                    };
+
+                }
+                else 
+                {
+
+                    var getLocationList = _iLocationService.GetLocationList(0L, userType, keyword, page, pageSize);
+                    return new ContentResult
+                    {
+                        StatusCode = 200,
+                        ContentType = "application/json",
+                        Content = JsonSerializer.Serialize(getLocationList)
+                    };
+                    
+                }
+
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("api/update-location")]
+        public IActionResult UpdateLocation(
+            [FromQuery] long id,
+            [FromBody] LocationDto locationInfo
+        )
+        {
+
+            try {
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+
+                var updateLocation = _iLocationService.UpdateLocation(id, userId, locationInfo);
                
                 return new ContentResult
                 {
                     StatusCode = 200,
                     ContentType = "application/json",
-                    Content = JsonSerializer.Serialize(getLocationList)
+                    Content = JsonSerializer.Serialize(updateLocation)
                 };
 
             }

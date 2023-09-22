@@ -186,7 +186,7 @@ namespace barangay_crime_compliant_api.Services
                     // Generate JWT
                     var token = new JwtSecurityTokenHandler().WriteToken(auth);
 
-                    if(loginDto.UserType.Equals("admin")) 
+                    if(loginDto.UserType.Equals("admin") || loginDto.UserType.Equals("police")) 
                     {
                         return token;
                     } 
@@ -305,6 +305,16 @@ namespace barangay_crime_compliant_api.Services
                 userPersonalInfo.CityCode = userPersonalInfoRes.CityCode;
                 userPersonalInfo.BrgyCode = userPersonalInfoRes.BrgyCode;
 
+                DateTime birthDate = userPersonalInfoRes.BirthDate.Value;
+                string birthDateFormatted = birthDate.ToString("yyyy-MM-dd");
+                userPersonalInfo.BirthDateStr = birthDateFormatted;
+                userPersonalInfo.Gender = userPersonalInfoRes.Gender;
+                userPersonalInfo.HouseNo = userPersonalInfoRes.HouseNo;
+                userPersonalInfo.Street = userPersonalInfoRes.Street;
+                userPersonalInfo.Village = userPersonalInfoRes.Village;
+                userPersonalInfo.UnitFloor = userPersonalInfoRes.UnitFloor;
+                userPersonalInfo.Building = userPersonalInfoRes.Building;
+                userPersonalInfo.SelfieIdImage = userPersonalInfoRes.Selfie;
             }
             
             return userPersonalInfo;

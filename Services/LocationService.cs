@@ -30,14 +30,26 @@ namespace barangay_crime_compliant_api.Services
 
         }
 
-        public List<LocationDto> GetLocationList(string keyword, int page, int pageSize)
+        public List<LocationDto> GetLocationList(long userId, string userType, string keyword, int page, int pageSize)
         {
 
             IQueryable<Location> query = db.Locations;
+
+            var barangayInfo = db.Users.Where(z => z.Id == userId).FirstOrDefault();
+            if(userId != 0L && userType.Equals("barangay")) 
+            {
+                query = query.Where(z => z.CrimeCompliantReport.User.BrgyCode == barangayInfo.BrgyCode);
+            }
+
+            if(userId != 0L && userType.Equals("compliant")) 
+            {
+                query = query.Where(z => z.CrimeCompliantReport.User.Id == userId);
+            }
+
             List<LocationDto> locationList = new List<LocationDto>();
             if(!string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(z => z.Description.Contains(keyword));
+                query = query.Where(z => z.CrimeCompliantReportId == Convert.ToInt64(keyword));
             }
 
             var locationRes = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -60,5 +72,28 @@ namespace barangay_crime_compliant_api.Services
             return locationList;
 
         }
+
+        public LocationDto UpdateLocation(long id, long userId, LocationDto locationInfo)
+        {
+
+            var hasLocation = db.Locations.Any(z => z.Id == id && z.CrimeCompliantReport.User.Id == userId);
+            if(hasLocation) 
+            {
+
+                var location = db.Locations.Where(z => z.Id == id && z.CrimeCompliantReport.User.Id == userId).First();
+                
+                location.Lat = locationInfo.Lat;
+                location.Long = locationInfo.Long;
+
+                // location.Description = locationInfo.Description;
+                location.DateTimeUpdated = DateTime.Now;
+                db.SaveChanges();
+
+            }
+            
+            
+            return locationInfo;
+        }
+
     }
 }

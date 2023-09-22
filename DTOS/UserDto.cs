@@ -30,6 +30,7 @@ namespace barangay_crime_compliant_api.DTOS
         public string? ProvinceName { get;set; }
         public string? CityName { get;set; }
         public string? BarangayName { get;set; }
+        public string BirthDateStr { get; set; }
     }
 
     public class LoginDto

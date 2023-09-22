@@ -124,6 +124,7 @@ namespace barangay_crime_compliant_api.Services
                 string formattedIdValue = manageCrime.Id.ToString("D3");
                 manageCrimeDto.ReportId = manageCrime.Id;
                 manageCrimeDto.ReportIdStr = formattedIdValue;
+                manageCrimeDto.CrimeCompliantId = manageCrime.CrimeCompliantId;
                 manageCrimeDto.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrime.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeDto.Date = manageCrime.DateTimeCreated.Value;
                 manageCrimeDto.Time = dateTimeCreated.ToString("HH:mm:ss");

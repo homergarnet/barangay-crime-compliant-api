@@ -16,45 +16,48 @@ namespace barangay_crime_compliant_api.Services
             this.db = db;
         }
 
-        public AnnouncementDto CreateAnnouncement(AnnouncementDto announcementRes)
+        public AnnouncementDescription CreateAnnouncement(AnnouncementDescription announcementDescriptionInfo)
         {
 
             Announcement announcement = new Announcement();
-
-            announcement.Description = announcementRes.Description;
-            announcement.UserId = announcementRes.UserId;
+            announcement.Description = announcementDescriptionInfo.Description;
+            announcement.UserId = announcementDescriptionInfo.UserId;
             announcement.DateTimeCreated = DateTime.Now;
             db.Announcements.Add(announcement);
             db.SaveChanges();
-            return announcementRes;
+            return announcementDescriptionInfo;
 
         }
 
-        public List<AnnouncementDto> GetAnnouncementList(string keyword, int page, int pageSize)
+        public AnnouncementDto GetAnnouncement(string keyword, int page, int pageSize)
         {
 
             IQueryable<Announcement> query = db.Announcements;
-            List<AnnouncementDto> announcementList = new List<AnnouncementDto>();
+            long announcementTotalCount = query.Count();
+            AnnouncementDto announcementResponse = new AnnouncementDto();
             if(!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(z => z.Description.Contains(keyword));
             }
-            var announcementRes = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var announcementRes = query.OrderByDescending(z => z.Id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var announcementDescriptionList = new List<AnnouncementDescription>();
             foreach(var announcement in announcementRes)
             {
-                var announcementDto = new AnnouncementDto();
-                announcementDto.Id = announcement.Id;
-                announcementDto.Description = announcement.Description;
-                announcementDto.DateTimeCreated = announcement.DateTimeCreated;
-                announcementDto.DateTimeUpdated = announcement.DateTimeUpdated;
-                announcementDto.UserId = announcement.UserId;
-                announcementList.Add(announcementDto);
+                AnnouncementDescription announcementDescriptionDto = new AnnouncementDescription();
+                announcementDescriptionDto.Id = announcement.Id;
+                announcementDescriptionDto.Description = announcement.Description;
+                announcementDescriptionDto.DateTimeCreated = announcement.DateTimeCreated;
+                announcementDescriptionDto.DateTimeUpdated = announcement.DateTimeUpdated;
+                announcementDescriptionDto.UserId = announcement.UserId;
+                announcementDescriptionList.Add(announcementDescriptionDto);
             }
-            return announcementList;
+            announcementResponse.AnnouncementDescription = announcementDescriptionList;
+            announcementResponse.AnnouncementTotalCount = announcementTotalCount;
+            return announcementResponse;
 
         }
 
-        public AnnouncementDto UpdateAnnouncement(long id, long userId, AnnouncementDto announcementInfo)
+        public AnnouncementDescription UpdateAnnouncement(long id, long userId, AnnouncementDescription announcementInfo)
         {
 
             var hasAnnouncement = db.Announcements.Any(z => z.Id == id && z.UserId == userId);

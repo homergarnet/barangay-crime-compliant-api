@@ -18,6 +18,7 @@ namespace barangay_crime_compliant_api.DTOS
         public string Status { get;set; }
         public string Resolution { get;set; }
         public DateTime? DateResolved { get;set; }
+        public long? CrimeCompliantId { get;set; }
 
     }
 

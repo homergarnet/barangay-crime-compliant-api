@@ -24,15 +24,15 @@ namespace barangay_crime_compliant_api.Controllers
         [Authorize]
         [HttpPost]
         [Route("api/create-announcement")]
-        public IActionResult CreateAccount([FromBody] AnnouncementDto announcementInfo)
+        public IActionResult CreateAccount([FromBody] AnnouncementDescription announcementDescriptionInfo)
         {
 
 
             try {
 
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
-                announcementInfo.UserId = userId;
-                var createAnnouncement = _iAnnouncementService.CreateAnnouncement(announcementInfo);
+                announcementDescriptionInfo.UserId = userId;
+                var createAnnouncement = _iAnnouncementService.CreateAnnouncement(announcementDescriptionInfo);
                
                 return new ContentResult
                 {
@@ -58,7 +58,7 @@ namespace barangay_crime_compliant_api.Controllers
         [Authorize]
         [HttpGet]
         [Route("api/get-announcement")]
-        public IActionResult GetAnnouncementList(
+        public IActionResult GetAnnouncement(
             [FromQuery] string keyword, [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10
         )
@@ -66,7 +66,7 @@ namespace barangay_crime_compliant_api.Controllers
 
             try {
 
-                var getAnnouncement = _iAnnouncementService.GetAnnouncementList(keyword, page, pageSize);
+                var getAnnouncement = _iAnnouncementService.GetAnnouncement(keyword, page, pageSize);
                
                 return new ContentResult
                 {
@@ -95,7 +95,7 @@ namespace barangay_crime_compliant_api.Controllers
         public IActionResult UpdateAnnouncement(
             [FromQuery] long id,
 
-            [FromBody] AnnouncementDto announcementInfo
+            [FromBody] AnnouncementDescription announcementDescriptionInfo
         )
         {
 
@@ -103,7 +103,7 @@ namespace barangay_crime_compliant_api.Controllers
 
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
 
-                var updateAnnouncement = _iAnnouncementService.UpdateAnnouncement(id, userId, announcementInfo);
+                var updateAnnouncement = _iAnnouncementService.UpdateAnnouncement(id, userId, announcementDescriptionInfo);
                
                 return new ContentResult
                 {
