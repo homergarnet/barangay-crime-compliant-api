@@ -129,10 +129,6 @@ namespace barangay_crime_complaint_api.Models
 
                 entity.Property(e => e.Description).IsUnicode(false);
 
-                entity.Property(e => e.Lat).HasColumnType("decimal(18, 0)");
-
-                entity.Property(e => e.Long).HasColumnType("decimal(18, 0)");
-
                 entity.HasOne(d => d.CrimeCompliantReport)
                     .WithMany(p => p.Locations)
                     .HasForeignKey(d => d.CrimeCompliantReportId)

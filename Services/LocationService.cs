@@ -76,11 +76,11 @@ namespace barangay_crime_compliant_api.Services
         public LocationDto UpdateLocation(long id, long userId, LocationDto locationInfo)
         {
 
-            var hasLocation = db.Locations.Any(z => z.Id == id && z.CrimeCompliantReport.User.Id == userId);
+            var hasLocation = db.Locations.Any(z => z.CrimeCompliantReport.User.Id == userId && z.CrimeCompliantReportId == locationInfo.CrimeCompliantReportId);
             if(hasLocation) 
             {
 
-                var location = db.Locations.Where(z => z.Id == id && z.CrimeCompliantReport.User.Id == userId).First();
+                var location = db.Locations.Where(z => z.CrimeCompliantReport.User.Id == userId && z.CrimeCompliantReportId == locationInfo.CrimeCompliantReportId).First();
                 
                 location.Lat = locationInfo.Lat;
                 location.Long = locationInfo.Long;

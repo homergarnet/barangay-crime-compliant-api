@@ -9,8 +9,8 @@ namespace barangay_crime_compliant_api.DTOS
         public string Barangay { get;set; }
         public DateTime? Date { get;set; }
         public string? Time { get;set; }
-        public decimal? Lat { get;set; }
-        public decimal? Long { get;set; }
+        public float? Lat { get;set; }
+        public float? Long { get;set; }
         public string Category { get;set; }
         public string Description { get;set; }
         public string ReporterName { get;set; }
