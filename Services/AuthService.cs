@@ -242,7 +242,7 @@ namespace barangay_crime_compliant_api.Services
 
         public List<UserDto> GetUserPersonalInfoList(string keyword, int page, int pageSize)
         {
-            IQueryable<User> query = db.Users.Where(z => z.UserType.Equals("compliant"));
+            IQueryable<User> query = db.Users.Where(z => !z.UserType.Equals("admin"));
 
             var provinceQuery = db.PhProvinces;
             var cityQuery = db.PhCities;
