@@ -188,24 +188,42 @@ namespace barangay_crime_compliant_api.Services
 
                     if(loginDto.UserType.Equals("admin") || loginDto.UserType.Equals("police")) 
                     {
-                        return token;
+                        if(user.UserType.Equals(loginDto.UserType))
+                        {
+                            return token;
+                        }
+                        else
+                        {
+                            return "Wrong User or Password";
+                        }
+
                     } 
                     else if(loginDto.UserType.Equals("barangay")) 
                     {
 
-                        return token;
+                        if(user.UserType.Equals(loginDto.UserType))
+                        {
+                            return token;
+                        }
+                        else
+                        {
+                            return "Wrong User or Password";
+                        }
 
                     }
                             
                     else if(loginDto.UserType.Equals("compliant")) 
                     {
 
-                        return token;
+                        if(user.UserType.Equals(loginDto.UserType))
+                        {
+                            return token;
+                        }
+                        else
+                        {
+                            return "Wrong User or Password";
+                        }
 
-                    }
-                    else
-                    {
-                        return token;
                     }
 
                 }
