@@ -188,7 +188,7 @@ namespace barangay_crime_compliant_api.Services
 
                     if(loginDto.UserType.Equals("admin") || loginDto.UserType.Equals("police")) 
                     {
-                        if(user.UserType.Equals(loginDto.UserType))
+                        if(user.UserType.Equals(loginDto.UserType) || user.UserType.Equals("police"))
                         {
                             return token;
                         }

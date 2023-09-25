@@ -11,12 +11,12 @@ namespace barangay_crime_compliant_api.Controllers
 
         private readonly IManageCrimeService _iManageCrimeService;
         private readonly IAuthService _iAuthService;
- 
+
         public ManageCrimeController(IManageCrimeService iManageCrimeService, IAuthService iAuthService)
         {
             _iManageCrimeService = iManageCrimeService;
             _iAuthService = iAuthService;
-        
+
         }
 
         [Authorize]
@@ -25,21 +25,22 @@ namespace barangay_crime_compliant_api.Controllers
         public IActionResult GetManageCrimeList(
             [FromQuery] string reportType,
             [FromQuery] string status,
-            [FromQuery] string keyword, [FromQuery] int page = 1, 
+            [FromQuery] string keyword, [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10
         )
         {
 
-            try {
+            try
+            {
 
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var userType = Convert.ToString(User.FindFirst("UserType").Value);
 
 
-                if(userType.Equals("barangay") || userType.Equals("compliant"))
+                if (userType.Equals("barangay") || userType.Equals("compliant"))
                 {
                     var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, userId, userType, keyword, page, pageSize);
-                
+
                     return new ContentResult
                     {
                         StatusCode = 200,
@@ -47,12 +48,12 @@ namespace barangay_crime_compliant_api.Controllers
                         Content = JsonSerializer.Serialize(getManageCrimeList)
                     };
                 }
-                
+
                 //ADMIN
                 else
                 {
-                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, 0L,userType, keyword, page, pageSize);
-                
+                    var getManageCrimeList = _iManageCrimeService.GetManageCrimeList(reportType, status, 0L, userType, keyword, page, pageSize);
+
                     return new ContentResult
                     {
                         StatusCode = 200,
@@ -60,6 +61,45 @@ namespace barangay_crime_compliant_api.Controllers
                         Content = JsonSerializer.Serialize(getManageCrimeList)
                     };
                 }
+
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("api/get-manage-crime-count")]
+        public IActionResult ManageCrimeCount(
+            [FromQuery] string reportType
+        )
+        {
+
+            try
+            {
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+                var userType = Convert.ToString(User.FindFirst("UserType").Value);
+
+                var manageCrimeCount = _iManageCrimeService.ManageCrimeCount(reportType, userId, userType);
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(manageCrimeCount)
+                };
+
 
 
             }
@@ -86,10 +126,11 @@ namespace barangay_crime_compliant_api.Controllers
         )
         {
 
-            try {
+            try
+            {
 
                 var getManageCrimeRes = _iManageCrimeService.GetManageCrimeById(id, reportType);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -121,10 +162,11 @@ namespace barangay_crime_compliant_api.Controllers
         )
         {
 
-            try {
-       
+            try
+            {
+
                 var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, status);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -156,11 +198,12 @@ namespace barangay_crime_compliant_api.Controllers
         )
         {
 
-            try {
-                
+            try
+            {
+
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
                 var updateCrimeImage = _iManageCrimeService.UpdateCrimeResolution(id, userId, resolution);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
