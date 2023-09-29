@@ -31,10 +31,10 @@ namespace barangay_crime_complaint_api
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });                
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
             services.AddControllers();
-            
+
             //SQL SERVER CONNECTION HERE
 
             services.AddDbContext<Thesis_CrimeContext>(option =>
@@ -96,7 +96,7 @@ namespace barangay_crime_complaint_api
             );
 
             services.AddCors();
-            
+
 
             //SERVICES
             services.AddTransient<IAuthService, AuthService>();
@@ -108,7 +108,7 @@ namespace barangay_crime_complaint_api
             services.AddTransient<IManageCrimeService, ManageCrimeService>();
             services.AddTransient<IReportsService, ReportsService>();
             services.AddTransient<IBarangayService, BarangayService>();
-            
+
             services.Configure<FormOptions>(options =>
             {
                 options.MultipartBodyLengthLimit = 10_000_000; // 10 MB limit per file
@@ -130,7 +130,7 @@ namespace barangay_crime_complaint_api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -160,7 +160,7 @@ namespace barangay_crime_complaint_api
                 RequestPath = new PathString("/Storage")
             }); */
 
-            
+
 
             app.UseAuthentication();
 
