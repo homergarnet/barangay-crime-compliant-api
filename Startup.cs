@@ -147,11 +147,11 @@ namespace barangay_crime_complaint_api
             });
 
             // Local
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
-                RequestPath = new PathString("/uploads")
-            });
+            // app.UseStaticFiles(new StaticFileOptions()
+            // {
+            //     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
+            //     RequestPath = new PathString("/uploads")
+            // });
 
             // IIS
             /* app.UseStaticFiles(new StaticFileOptions()
@@ -160,6 +160,28 @@ namespace barangay_crime_complaint_api
                 RequestPath = new PathString("/Storage")
             }); */
 
+            // for single host of web and api start
+            app.Use(async (context, next) =>
+
+            {
+
+                await next();
+
+                if (context.Response.StatusCode == 404 && !System.IO.Path.HasExtension(context.Request.Path.Value))
+
+                {
+
+                    context.Request.Path = "/index.html";
+
+                    await next();
+
+                }
+
+            });
+            
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+            // for single host of web and api end
 
 
             app.UseAuthentication();
