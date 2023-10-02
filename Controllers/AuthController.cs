@@ -113,6 +113,16 @@ namespace barangay_crime_compliant_api.Controllers
                         Content = user
                     };
                 }
+
+                if(user == "Email Already Exist")
+                {
+                    return new ContentResult
+                    {
+                        StatusCode = 500,
+                        ContentType = "application/json",
+                        Content = user
+                    };
+                }
                 return new ContentResult
                 {
                     StatusCode = 200,

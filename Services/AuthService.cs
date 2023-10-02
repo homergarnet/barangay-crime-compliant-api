@@ -108,7 +108,7 @@ namespace barangay_crime_compliant_api.Services
             user.Email = Email;
 
             // Define a target directory to save the uploaded file
-            var targetDirectory = "wwwroot/uploads"; // Change this to your desired directory
+            var targetDirectory = "uploads"; // Change this to your desired directory
 
             // Ensure the target directory exists
             Directory.CreateDirectory(targetDirectory);
