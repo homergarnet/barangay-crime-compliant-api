@@ -147,40 +147,40 @@ namespace barangay_crime_complaint_api
             });
 
             // Local
-            // app.UseStaticFiles(new StaticFileOptions()
-            // {
-            //     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
-            //     RequestPath = new PathString("/uploads")
-            // });
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"uploads")),
+                RequestPath = new PathString("/uploads")
+            });
 
             // IIS
-            /* app.UseStaticFiles(new StaticFileOptions()
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, @"Storage")),
-                RequestPath = new PathString("/Storage")
-            }); */
+            // app.UseStaticFiles(new StaticFileOptions()
+            // {
+            //     FileProvider = new PhysicalFileProvider(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, @"uploads")),
+            //     RequestPath = new PathString("/uploads")
+            // }); 
 
             // for single host of web and api start
-            app.Use(async (context, next) =>
+            // app.Use(async (context, next) =>
 
-            {
+            // {
 
-                await next();
+            //     await next();
 
-                if (context.Response.StatusCode == 404 && !System.IO.Path.HasExtension(context.Request.Path.Value))
+            //     if (context.Response.StatusCode == 404 && !System.IO.Path.HasExtension(context.Request.Path.Value))
 
-                {
+            //     {
 
-                    context.Request.Path = "/index.html";
+            //         context.Request.Path = "/index.html";
 
-                    await next();
+            //         await next();
 
-                }
+            //     }
 
-            });
+            // });
             
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            // app.UseDefaultFiles();
+            // app.UseStaticFiles();
             // for single host of web and api end
 
 
