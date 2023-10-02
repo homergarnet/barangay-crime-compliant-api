@@ -75,9 +75,14 @@ namespace barangay_crime_compliant_api.Services
             // user.Id = item.Id;
             // user.Id = item.Id;
             var userExist = db.Users.Any(z => z.Username == Username);
+            var emailExist = db.Users.Any(z => z.Email == Email);
             if(userExist)
             {
                 return "User Already Exist";
+            }
+            if(emailExist)
+            {
+                return "Email Already Exist";
             }
             user.Username = Username;
             user.Password = BCrypt.Net.BCrypt.HashPassword(Password);
@@ -103,7 +108,7 @@ namespace barangay_crime_compliant_api.Services
             user.Email = Email;
 
             // Define a target directory to save the uploaded file
-            var targetDirectory = "uploads"; // Change this to your desired directory
+            var targetDirectory = "wwwroot/uploads"; // Change this to your desired directory
 
             // Ensure the target directory exists
             Directory.CreateDirectory(targetDirectory);
