@@ -8,7 +8,7 @@ namespace barangay_crime_compliant_api.Services
     {
          
         LocationDto CreateLocation(LocationDto locationInfo);
-        List<LocationDto> GetLocationList(long userId, string userType, string keyword, int page, int pageSize);
+        List<LocationDto> GetLocationList(long userId, string userType, string status, string keyword, int page, int pageSize);
         LocationDto UpdateLocation(long id, long userId, LocationDto locationInfo);
     
     }

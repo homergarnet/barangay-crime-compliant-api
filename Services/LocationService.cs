@@ -30,7 +30,7 @@ namespace barangay_crime_compliant_api.Services
 
         }
 
-        public List<LocationDto> GetLocationList(long userId, string userType, string keyword, int page, int pageSize)
+        public List<LocationDto> GetLocationList(long userId, string userType, string status, string keyword, int page, int pageSize)
         {
 
             IQueryable<Location> query = db.Locations;
@@ -49,7 +49,52 @@ namespace barangay_crime_compliant_api.Services
             List<LocationDto> locationList = new List<LocationDto>();
             if(!string.IsNullOrEmpty(keyword))
             {
+
                 query = query.Where(z => z.CrimeCompliantReportId == Convert.ToInt64(keyword));
+                if (status != null)
+                {
+
+                    if (!string.IsNullOrEmpty(status) && !status.Equals("completed") && !status.Equals("closed"))
+                    {
+                        query = query.Where(z => !z.CrimeCompliantReport.Status.Equals("completed") && !z.CrimeCompliantReport.Status.Equals("closed"));
+                    }
+
+                    else if (!string.IsNullOrEmpty(status) && status.Equals("completed"))
+                    {
+                        query = query.Where(z => z.CrimeCompliantReport.Status.Equals(status));
+                    }
+
+                    else if (!string.IsNullOrEmpty(status) && status.Equals("closed"))
+                    {
+                        query = query.Where(z => z.CrimeCompliantReport.Status.Equals(status));
+                    }
+
+                }
+
+            }
+            else 
+            {
+
+                if (status != null)
+                {
+
+                    if (!string.IsNullOrEmpty(status) && !status.Equals("completed") && !status.Equals("closed"))
+                    {
+                        query = query.Where(z => !z.CrimeCompliantReport.Status.Equals("completed") && !z.CrimeCompliantReport.Status.Equals("closed"));
+                    }
+
+                    else if (!string.IsNullOrEmpty(status) && status.Equals("completed"))
+                    {
+                        query = query.Where(z => z.CrimeCompliantReport.Status.Equals(status));
+                    }
+
+                    else if (!string.IsNullOrEmpty(status) && status.Equals("closed"))
+                    {
+                        query = query.Where(z => z.CrimeCompliantReport.Status.Equals(status));
+                    }
+
+                }
+
             }
 
             var locationRes = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();

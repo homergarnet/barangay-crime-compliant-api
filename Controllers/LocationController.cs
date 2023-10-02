@@ -58,6 +58,7 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpGet]
         [Route("api/get-location")]
         public IActionResult GetLocationList(
+            [FromQuery] string status,
             [FromQuery] string keyword, [FromQuery] int page = 1, 
             [FromQuery] int pageSize = 10
         )
@@ -73,7 +74,7 @@ namespace barangay_crime_compliant_api.Controllers
                 if(userType.Equals("barangay") || userType.Equals("compliant"))
                 {
 
-                    var getLocationList = _iLocationService.GetLocationList(userId, userType, keyword, page, pageSize);
+                    var getLocationList = _iLocationService.GetLocationList(userId, userType, status, keyword, page, pageSize);
                     return new ContentResult
                     {
                         StatusCode = 200,
@@ -85,7 +86,7 @@ namespace barangay_crime_compliant_api.Controllers
                 else 
                 {
 
-                    var getLocationList = _iLocationService.GetLocationList(0L, userType, keyword, page, pageSize);
+                    var getLocationList = _iLocationService.GetLocationList(0L, userType, status, keyword, page, pageSize);
                     return new ContentResult
                     {
                         StatusCode = 200,
