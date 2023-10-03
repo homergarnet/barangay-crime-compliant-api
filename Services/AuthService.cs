@@ -21,15 +21,15 @@ namespace barangay_crime_compliant_api.Services
 
         public string CreateAccount(UserDto item)
         {
-            
+
             User user = new User();
             // user.Id = item.Id;
             var userExist = db.Users.Any(z => z.Username == item.Username);
-            if(userExist)
+            if (userExist)
             {
                 return "User Already Exist";
             }
-            else 
+            else
             {
 
                 user.Username = item.Username;
@@ -49,38 +49,38 @@ namespace barangay_crime_compliant_api.Services
                 user.CityCode = item.CityCode;
                 user.BrgyCode = item.BrgyCode;
                 user.ZipCode = item.ZipCode;
-                user.DateCreated =DateTime.Now;
-                user.DateUpdated =DateTime.Now;
+                user.DateCreated = DateTime.Now;
+                user.DateUpdated = DateTime.Now;
                 user.UserType = item.UserType;
                 db.Users.Add(user);
                 db.SaveChanges();
-               
+
                 return "Successfully Created Account";
             }
 
-            
+
 
         }
 
         public string CreatePersonalInfo(
-            IFormFile ValidId, IFormFile SelfieId, string Username, string Password, string FirstName, 
-            string MiddleName, string LastName, DateTime BirthDate, string Gender, string Phone, 
-            string HouseNo, string Street, string Village, string UnitFloor, string Building, 
-            string ProvinceCode, string CityCode, string BrgyCode, string ZipCode, DateTime DateCreated, 
+            IFormFile ValidId, IFormFile SelfieId, string Username, string Password, string FirstName,
+            string MiddleName, string LastName, DateTime BirthDate, string Gender, string Phone,
+            string HouseNo, string Street, string Village, string UnitFloor, string Building,
+            string ProvinceCode, string CityCode, string BrgyCode, string ZipCode, DateTime DateCreated,
             string UserType, string ResidencyType, string Email
         )
         {
-            
+
             User user = new User();
             // user.Id = item.Id;
             // user.Id = item.Id;
             var userExist = db.Users.Any(z => z.Username == Username);
             var emailExist = db.Users.Any(z => z.Email == Email);
-            if(userExist)
+            if (userExist)
             {
                 return "User Already Exist";
             }
-            if(emailExist)
+            if (emailExist)
             {
                 return "Email Already Exist";
             }
@@ -101,8 +101,8 @@ namespace barangay_crime_compliant_api.Services
             user.CityCode = CityCode;
             user.BrgyCode = BrgyCode;
             user.ZipCode = ZipCode;
-            user.DateCreated =DateTime.Now;
-            user.DateUpdated =DateTime.Now;
+            user.DateCreated = DateTime.Now;
+            user.DateUpdated = DateTime.Now;
             user.UserType = UserType;
             user.ResidencyType = ResidencyType;
             user.Email = Email;
@@ -129,7 +129,7 @@ namespace barangay_crime_compliant_api.Services
             {
 
                 ValidId.CopyTo(fileStream);
-                
+
             }
 
             using (var memoryStream = new MemoryStream())
@@ -142,10 +142,10 @@ namespace barangay_crime_compliant_api.Services
 
                 SelfieId.CopyTo(memoryStream);
                 user.Selfie = selfie;
-                
+
             }
 
-            
+
             db.Users.Add(user);
             db.SaveChanges();
 
@@ -153,17 +153,17 @@ namespace barangay_crime_compliant_api.Services
 
         }
 
-        public string Login(LoginDto loginDto) 
+        public string Login(LoginDto loginDto)
         {
 
-            var user = db.Users.Where(z => z.Username  == loginDto.Username).FirstOrDefault();
+            var user = db.Users.Where(z => z.Username == loginDto.Username).FirstOrDefault();
             bool verified = false;
             string password = loginDto.Password.Trim();
-            
-            if (user != null) 
+
+            if (user != null)
             {
                 verified = BCrypt.Net.BCrypt.Verify(password, user.Password);
-                if(verified) 
+                if (verified)
                 {
 
                     // User Claims
@@ -175,7 +175,7 @@ namespace barangay_crime_compliant_api.Services
                         new Claim("MiddleName", user.MiddleName.ToString()),
                         new Claim("LastName", user.LastName.ToString()),
                         new Claim("UserType", user.UserType.ToString()),
-                        
+
                     };
 
                     // Encrypt credentials
@@ -191,22 +191,9 @@ namespace barangay_crime_compliant_api.Services
                     // Generate JWT
                     var token = new JwtSecurityTokenHandler().WriteToken(auth);
 
-                    if(loginDto.UserType.Equals("admin") || loginDto.UserType.Equals("police")) 
+                    if (loginDto.UserType.Equals("admin") || loginDto.UserType.Equals("police"))
                     {
-                        if(user.UserType.Equals(loginDto.UserType) || user.UserType.Equals("police"))
-                        {
-                            return token;
-                        }
-                        else
-                        {
-                            return "Wrong User or Password";
-                        }
-
-                    } 
-                    else if(loginDto.UserType.Equals("barangay")) 
-                    {
-
-                        if(user.UserType.Equals(loginDto.UserType))
+                        if (user.UserType.Equals(loginDto.UserType) || user.UserType.Equals("police"))
                         {
                             return token;
                         }
@@ -216,11 +203,24 @@ namespace barangay_crime_compliant_api.Services
                         }
 
                     }
-                            
-                    else if(loginDto.UserType.Equals("compliant")) 
+                    else if (loginDto.UserType.Equals("barangay"))
                     {
 
-                        if(user.UserType.Equals(loginDto.UserType))
+                        if (user.UserType.Equals(loginDto.UserType))
+                        {
+                            return token;
+                        }
+                        else
+                        {
+                            return "Wrong User or Password";
+                        }
+
+                    }
+
+                    else if (loginDto.UserType.Equals("compliant"))
+                    {
+
+                        if (user.UserType.Equals(loginDto.UserType))
                         {
                             return token;
                         }
@@ -232,15 +232,15 @@ namespace barangay_crime_compliant_api.Services
                     }
 
                 }
-               
+
                 //Not verified
                 else
                 {
                     return "Wrong User or Password";
                 }
-                
+
             }
-            
+
             return "Wrong User or Password";
 
         }
@@ -254,7 +254,7 @@ namespace barangay_crime_compliant_api.Services
             var barangayQuery = db.PhBrgies;
 
             List<UserDto> getUserPersonalInfoList = new List<UserDto>();
-            if(!string.IsNullOrEmpty(keyword))
+            if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(
                     z => z.FirstName.Contains(keyword) || z.MiddleName.Contains(keyword) ||
@@ -270,7 +270,7 @@ namespace barangay_crime_compliant_api.Services
             .Include(z => z.BrgyCodeNavigation)
             .Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            foreach(var userPersonalInfo in userPersonalInfoRes)
+            foreach (var userPersonalInfo in userPersonalInfoRes)
             {
 
                 var userPersonalInfoDto = new UserDto();
@@ -289,9 +289,9 @@ namespace barangay_crime_compliant_api.Services
                 userPersonalInfoDto.Village = userPersonalInfo.Village;
                 userPersonalInfoDto.UnitFloor = userPersonalInfo.UnitFloor;
                 getUserPersonalInfoList.Add(userPersonalInfoDto);
-                
+
             }
-            
+
             return getUserPersonalInfoList;
         }
 
@@ -305,7 +305,7 @@ namespace barangay_crime_compliant_api.Services
 
             var userPersonalInfo = new UserDto();
             var hasUserPersonalInfo = db.Users.Any(z => z.Id == id);
-            if(hasUserPersonalInfo) 
+            if (hasUserPersonalInfo)
             {
 
                 var userPersonalInfoRes = query
@@ -339,8 +339,49 @@ namespace barangay_crime_compliant_api.Services
                 userPersonalInfo.Building = userPersonalInfoRes.Building;
                 userPersonalInfo.SelfieIdImage = userPersonalInfoRes.Selfie;
             }
-            
+
             return userPersonalInfo;
+        }
+
+        public string UpdatePassword(UpdatePasswordDto updatePasswordInfo)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? "")),
+
+            };
+
+            SecurityToken validatedToken;
+            var principal = tokenHandler.ValidateToken(updatePasswordInfo.Token, tokenValidationParameters, out validatedToken);
+
+            // Check if the token has expired
+            if (validatedToken.ValidTo < DateTime.UtcNow)
+            {
+                return "Token has expired.";
+            }
+            else
+            {
+                var hasEmail = db.Users.Any(z => z.Email.Equals(updatePasswordInfo.Email) && z.ForgotPasswordToken.Equals(updatePasswordInfo.Token));
+                if (hasEmail)
+                {
+
+                    var email = db.Users.Where(z => z.Email.Equals(updatePasswordInfo.Email) && z.ForgotPasswordToken.Equals(updatePasswordInfo.Token)).First();
+                    email.Password = BCrypt.Net.BCrypt.HashPassword(updatePasswordInfo.NewPassword);
+                    email.ForgotPasswordToken = "";
+                    db.SaveChanges();
+
+                }
+
+                return "Password has been updated";
+            }
+
         }
 
     }

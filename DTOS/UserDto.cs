@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace barangay_crime_compliant_api.DTOS
 {
 
@@ -24,12 +26,12 @@ namespace barangay_crime_compliant_api.DTOS
         public DateTime? DateCreated { get; set; }
         public DateTime? DateUpdated { get; set; }
         public string? UserType { get; set; }
-        public string? Token { get;set; }
-        public string? ValidIdImage { get;set; }
-        public string? SelfieIdImage { get;set; }
-        public string? ProvinceName { get;set; }
-        public string? CityName { get;set; }
-        public string? BarangayName { get;set; }
+        public string? Token { get; set; }
+        public string? ValidIdImage { get; set; }
+        public string? SelfieIdImage { get; set; }
+        public string? ProvinceName { get; set; }
+        public string? CityName { get; set; }
+        public string? BarangayName { get; set; }
         public string BirthDateStr { get; set; }
     }
 
@@ -37,8 +39,20 @@ namespace barangay_crime_compliant_api.DTOS
     {
         public string? Username { get; set; }
         public string? Password { get; set; }
-        public string? UserType { get;set; }
+        public string? UserType { get; set; }
 
+    }
+
+    public class UpdatePasswordDto
+    {
+
+        [Required]
+        public string NewPassword { get; set; } = "";
+        [Required]
+        public string Email { get; set; } = "";
+        [Required]
+        public string Token { get; set; } = "";
+     
     }
 
 

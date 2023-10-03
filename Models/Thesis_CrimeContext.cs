@@ -271,6 +271,8 @@ namespace barangay_crime_complaint_api.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ForgotPasswordToken).IsUnicode(false);
+
                 entity.Property(e => e.Gender)
                     .HasMaxLength(50)
                     .IsUnicode(false);

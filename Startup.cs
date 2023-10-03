@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
+using barangay_crime_compliant_api.DTOS;
 namespace barangay_crime_complaint_api
 {
     public class Startup
@@ -33,6 +34,9 @@ namespace barangay_crime_complaint_api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
+
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            
             services.AddControllers();
 
             //SQL SERVER CONNECTION HERE
@@ -108,6 +112,7 @@ namespace barangay_crime_complaint_api
             services.AddTransient<IManageCrimeService, ManageCrimeService>();
             services.AddTransient<IReportsService, ReportsService>();
             services.AddTransient<IBarangayService, BarangayService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             services.Configure<FormOptions>(options =>
             {

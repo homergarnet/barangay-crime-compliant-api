@@ -17,7 +17,7 @@ namespace barangay_crime_compliant_api.Controllers
 
         private readonly IConfiguration _configuration;
         private readonly IAuthService _iAuthService;
-        
+
         public AuthController(IAuthService iAuthService, IConfiguration configuration)
         {
             _iAuthService = iAuthService;
@@ -28,10 +28,11 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/create-account")]
         public IActionResult CreateAccount([FromBody] UserDto userInfo)
         {
-            try {
+            try
+            {
 
                 var user = _iAuthService.CreateAccount(userInfo);
-                if(user == "User Already Exist")
+                if (user == "User Already Exist")
                 {
                     return new ContentResult
                     {
@@ -75,27 +76,28 @@ namespace barangay_crime_compliant_api.Controllers
             [FromForm] string ResidencyType, [FromForm] string Email
         )
         {
-            try {
+            try
+            {
 
-                    if (ValidId == null || ValidId.Length == 0)
+                if (ValidId == null || ValidId.Length == 0)
+                {
+                    return new ContentResult
                     {
-                        return new ContentResult
-                        {
-                            StatusCode = 404,
-                            ContentType = "application/json",
-                            Content = "No Valid image uploaded"
-                        };
-                    }
+                        StatusCode = 404,
+                        ContentType = "application/json",
+                        Content = "No Valid image uploaded"
+                    };
+                }
 
-                    if (SelfieId == null || SelfieId.Length == 0)
+                if (SelfieId == null || SelfieId.Length == 0)
+                {
+                    return new ContentResult
                     {
-                        return new ContentResult
-                        {
-                            StatusCode = 404,
-                            ContentType = "application/json",
-                            Content = "No Selfie image uploaded"
-                        };
-                    }
+                        StatusCode = 404,
+                        ContentType = "application/json",
+                        Content = "No Selfie image uploaded"
+                    };
+                }
 
 
                 var user = _iAuthService.CreatePersonalInfo(
@@ -104,7 +106,7 @@ namespace barangay_crime_compliant_api.Controllers
                     BrgyCode, ZipCode, DateCreated, UserType, ResidencyType, Email
                 );
 
-                if(user == "User Already Exist")
+                if (user == "User Already Exist")
                 {
                     return new ContentResult
                     {
@@ -114,7 +116,7 @@ namespace barangay_crime_compliant_api.Controllers
                     };
                 }
 
-                if(user == "Email Already Exist")
+                if (user == "Email Already Exist")
                 {
                     return new ContentResult
                     {
@@ -148,10 +150,11 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/login")]
         public IActionResult Login([FromBody] LoginDto loginInfo)
         {
-            try {
+            try
+            {
 
                 var loginRes = _iAuthService.Login(loginInfo);
-                if(loginRes.Equals("Wrong User or Password")) 
+                if (loginRes.Equals("Wrong User or Password"))
                 {
                     return new ContentResult
                     {
@@ -184,15 +187,16 @@ namespace barangay_crime_compliant_api.Controllers
         [HttpGet]
         [Route("api/get-user-personal-info")]
         public IActionResult GetUserPersonalInfoList(
-            [FromQuery] string keyword, [FromQuery] int page = 1, 
+            [FromQuery] string keyword, [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10
         )
         {
 
-            try {
+            try
+            {
 
                 var getUserPersonalInfoList = _iAuthService.GetUserPersonalInfoList(keyword, page, pageSize);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -221,10 +225,11 @@ namespace barangay_crime_compliant_api.Controllers
         )
         {
 
-            try {
+            try
+            {
 
                 var getUserPersonalInfoList = _iAuthService.GetUserPersonalInfoById(id);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -253,12 +258,13 @@ namespace barangay_crime_compliant_api.Controllers
         )
         {
 
-            try {
+            try
+            {
 
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
 
                 var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
-               
+
                 return new ContentResult
                 {
                     StatusCode = 200,
@@ -280,5 +286,42 @@ namespace barangay_crime_compliant_api.Controllers
 
         }
 
+        [HttpPut]
+        [Route("api/update-password")]
+        public IActionResult UpdatePassword(
+
+            [FromBody] UpdatePasswordDto updatePasswordInfo
+
+        )
+        {
+
+            try
+            {
+
+
+                var updatePassword = _iAuthService.UpdatePassword(updatePasswordInfo);
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = updatePassword
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
     }
+
 }
