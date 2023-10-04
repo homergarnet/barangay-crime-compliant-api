@@ -3,8 +3,11 @@
 
 ---------------------------------------------------------------------------------------------------------------
 for dotnet models
-
+//FOR windows
 dotnet ef dbcontext scaffold "Server=DESKTOP-JA43BLA;Database=Thesis_Crime;Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models --force
+
+//FOR macbook IOS
+dotnet ef dbcontext scaffold "Server=localhost;Database=Thesis;User ID=sa;Password=Password!1234; TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models --force
 ---------------------------------------------------------------------------------------------------------------
 to access swagger
 http://localhost:8001/swagger/index.html
