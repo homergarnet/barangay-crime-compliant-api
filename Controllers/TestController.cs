@@ -9,6 +9,12 @@ namespace barangay_crime_complaint_api.Controllers
     public class TestController : ControllerBase
     {
 
+        private readonly string _apkFolderPath;
+
+        public TestController()
+        {
+            _apkFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+        }
 
         [HttpGet]
         [Route("api/get")]
@@ -42,6 +48,28 @@ namespace barangay_crime_complaint_api.Controllers
             else
             {
                 return NotFound("Unable to determine the server's IPv4 address.");
+            }
+        }
+
+
+
+        [HttpGet]
+        [Route("api/download")]
+        public IActionResult GetApkFile()
+        {
+            var fileName = "app-debug.apk";
+            var filePath = Path.Combine(_apkFolderPath, fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                var contentType = "application/vnd.android.package-archive"; // APK MIME type
+
+                return File(fileStream, contentType, fileName);
+            }
+            else
+            {
+                return NotFound(); // File not found
             }
         }
     }
