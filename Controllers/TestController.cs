@@ -1,5 +1,8 @@
 using System.Net;
+using barangay_crime_compliant_api.DTOS;
+using barangay_crime_compliant_api.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace barangay_crime_complaint_api.Controllers
 {
@@ -10,9 +13,11 @@ namespace barangay_crime_complaint_api.Controllers
     {
 
         private readonly string _apkFolderPath;
-        public TestController()
+        private readonly IHubContext<ChatHub> _hubContext;
+        public TestController(IHubContext<ChatHub> hubContext)
         {
             _apkFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -68,5 +73,17 @@ namespace barangay_crime_complaint_api.Controllers
                 return NotFound(); // File not found
             }
         }
+
+        [HttpPost("SendMessage")]
+        public async Task<IActionResult> SendMessage([FromBody] MessageDto message)
+        {
+            // Your logic to process the message
+
+            // Send the message to clients using SignalR
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", message.User, message.Text);
+
+            return Ok();
+        }
+
     }
 }
