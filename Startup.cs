@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using barangay_crime_compliant_api.DTOS;
+using barangay_crime_compliant_api.Hubs;
 namespace barangay_crime_complaint_api
 {
     public class Startup
@@ -23,6 +24,7 @@ namespace barangay_crime_complaint_api
         public void ConfigureServices(IServiceCollection services)
         {
             var Cors = Configuration.GetSection("Cors");
+            services.AddSignalR();
             services.AddMemoryCache();
             services.AddControllers()
             .AddNewtonsoftJson(opt =>
@@ -36,7 +38,7 @@ namespace barangay_crime_complaint_api
             });
 
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
-            
+
             services.AddControllers();
 
             //SQL SERVER CONNECTION HERE
@@ -183,7 +185,7 @@ namespace barangay_crime_complaint_api
             //     }
 
             // });
-            
+
             // app.UseDefaultFiles();
             // app.UseStaticFiles();
             // for single host of web and api end
@@ -195,7 +197,9 @@ namespace barangay_crime_complaint_api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chatHub");
                 endpoints.MapControllers();
+
             });
         }
     }
