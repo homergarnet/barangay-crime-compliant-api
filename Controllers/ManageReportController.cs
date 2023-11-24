@@ -52,9 +52,9 @@ namespace barangay_crime_compliant_api.Controllers
 
                 foreach(var crimeCompliant in crimeCompliantList)
                 {
-                    var incidentReportedRes = crimeCompliantReport.Where(z => z.Id == crimeCompliant.Id).Count();
-                    var incidentResolvedRes = crimeCompliantReport.Where(z => z.Id == crimeCompliant.Id && z.Status.Equals("resolved")).Count();
-                    var incidentUnderInvestigationRes = crimeCompliantReport.Where(z => z.Id == crimeCompliant.Id && z.Status.Equals("investigation")).Count();
+                    var incidentReportedRes = crimeCompliantReport.Where(z => z.CrimeCompliantId == crimeCompliant.Id).Count();
+                    var incidentResolvedRes = crimeCompliantReport.Where(z => z.CrimeCompliantId == crimeCompliant.Id && z.Status.Equals("resolved")).Count();
+                    var incidentUnderInvestigationRes = crimeCompliantReport.Where(z => z.CrimeCompliantId == crimeCompliant.Id && z.Status.Equals("investigation")).Count();
                     incidentReportedList.Add(incidentReportedRes);
                     incidentResolvedList.Add(incidentResolvedRes);
                     incidentUnderInvestigationList.Add(incidentUnderInvestigationRes);

@@ -25,6 +25,7 @@ namespace barangay_crime_compliant_api.Services
                 DateTimeCreated = DateTime.Now,
                 CrimeCompliantId = CrimeCompliantId,
                 UserId = UserId,
+                Status = "pending"
             };
             await db.CrimeCompliantReports.AddAsync(crimeCompliantReport);
             await db.SaveChangesAsync();

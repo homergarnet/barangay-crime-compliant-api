@@ -158,6 +158,8 @@ namespace barangay_crime_compliant_api.Controllers
         [Route("api/update-crime-status")]
         public IActionResult UpdateCrimeStatus(
             [FromQuery] long id,
+            [FromQuery] long responderId,
+            [FromQuery] string responderDescription,
             [FromQuery] string status
         )
         {
@@ -165,7 +167,7 @@ namespace barangay_crime_compliant_api.Controllers
             try
             {
 
-                var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id, status);
+                var updateCrimeImage = _iManageCrimeService.UpdateCrimeStatus(id,responderId, responderDescription, status);
 
                 return new ContentResult
                 {

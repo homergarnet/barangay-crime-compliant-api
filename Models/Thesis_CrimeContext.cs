@@ -31,8 +31,6 @@ namespace barangay_crime_complaint_api.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-JA43BLA;Database=Thesis_Crime;Trusted_Connection=True;");
             }
         }
 
@@ -85,6 +83,8 @@ namespace barangay_crime_complaint_api.Models
 
                 entity.Property(e => e.Resolution).IsUnicode(false);
 
+                entity.Property(e => e.ResponderDescription).IsUnicode(false);
+
                 entity.Property(e => e.Status)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -94,8 +94,13 @@ namespace barangay_crime_complaint_api.Models
                     .HasForeignKey(d => d.CrimeCompliantId)
                     .HasConstraintName("FK_CrimeCompliantReport_CrimeCompliant");
 
+                entity.HasOne(d => d.Responder)
+                    .WithMany(p => p.CrimeCompliantReportResponders)
+                    .HasForeignKey(d => d.ResponderId)
+                    .HasConstraintName("FK_CrimeCompliantReport_Responder");
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.CrimeCompliantReports)
+                    .WithMany(p => p.CrimeCompliantReportUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_CrimeCompliantReport_User");
             });
