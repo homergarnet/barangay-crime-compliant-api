@@ -115,6 +115,7 @@ namespace barangay_crime_complaint_api
             services.AddTransient<IReportsService, ReportsService>();
             services.AddTransient<IBarangayService, BarangayService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IPoliceInOutService, PoliceInOutService>();
 
             services.Configure<FormOptions>(options =>
             {

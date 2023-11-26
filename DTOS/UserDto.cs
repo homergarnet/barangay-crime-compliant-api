@@ -33,8 +33,8 @@ namespace barangay_crime_compliant_api.DTOS
         public string? CityName { get; set; }
         public string? BarangayName { get; set; }
         public string BirthDateStr { get; set; }
-        public long id { get;set; }
-        public string? name { get;set; }
+        public long id { get; set; }
+        public string? name { get; set; }
     }
 
     public class LoginDto
@@ -54,7 +54,17 @@ namespace barangay_crime_compliant_api.DTOS
         public string Email { get; set; } = "";
         [Required]
         public string Token { get; set; } = "";
-     
+
+    }
+
+    public class PoliceInOutDto
+    {
+        public long Id { get; set; }
+        public long? UserId { get; set; }
+        public string Name { get;set; }
+        public string? Type { get; set; }
+        public string? DateTimeCreated { get; set; }
+        public string? DateTimeUpdated { get; set; }
     }
 
 

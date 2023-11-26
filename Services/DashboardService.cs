@@ -20,13 +20,13 @@ namespace barangay_crime_compliant_api.Services
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
             IQueryable<User> usersQuery = db.Users;
 
-            if(!string.IsNullOrEmpty(barangayCode))
+            if (!string.IsNullOrEmpty(barangayCode))
             {
                 query = query.Where(z => z.User.BrgyCode == barangayCode);
                 usersQuery = usersQuery.Where(z => z.BrgyCode == barangayCode);
             }
 
-            
+
             var dashboardRes = new DashboardDto();
             dashboardRes.TotalOfCrimes = query.Include(z => z.CrimeCompliant).Where(z => z.CrimeCompliant.Type.Contains("crime")).Count();
             dashboardRes.TotalOfCompliant = query.Include(z => z.CrimeCompliant).Where(z => z.CrimeCompliant.Type.Contains("compliant")).Count();
@@ -34,5 +34,20 @@ namespace barangay_crime_compliant_api.Services
             return dashboardRes;
 
         }
+
+        public long[] GetTotalBarangayReportCount()
+        {
+            List<long> totalBarangayReportCount = new List<long>();
+
+            var barangayUserList = db.Users.Where(z => z.UserType.Equals("barangay")).ToList();
+            foreach (var barangay in barangayUserList)
+            {
+                long barangayReportCount = db.CrimeCompliantReports.Include(z => z.User).Where(z => z.User.BrgyCode == barangay.BrgyCode).Count();
+                totalBarangayReportCount.Add(barangayReportCount);
+            }
+
+            return totalBarangayReportCount.ToArray();
+        }
+
     }
 }

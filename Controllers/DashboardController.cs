@@ -21,16 +21,17 @@ namespace barangay_crime_compliant_api.Controllers
         public IActionResult TotalDashboardCardCount()
         {
 
-            try {
+            try
+            {
 
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
-                
+
                 var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
-        
-                if(getUserPersonalInfo.UserType.Equals("admin") || getUserPersonalInfo.UserType.Equals("police")) 
+
+                if (getUserPersonalInfo.UserType.Equals("admin") || getUserPersonalInfo.UserType.Equals("police"))
                 {
                     var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(0);
-                
+
                     return new ContentResult
                     {
                         StatusCode = 200,
@@ -42,8 +43,8 @@ namespace barangay_crime_compliant_api.Controllers
                 else
                 {
 
-                    var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(userId,getUserPersonalInfo.BrgyCode);
-                
+                    var totalDashboardCount = _iDashboardService.TotalDashboardCardCount(userId, getUserPersonalInfo.BrgyCode);
+
                     return new ContentResult
                     {
                         StatusCode = 200,
@@ -67,5 +68,47 @@ namespace barangay_crime_compliant_api.Controllers
             }
 
         }
+
+        [Authorize]
+        [HttpGet]
+        [Route("api/get-total-barangay-report-count")]
+        public IActionResult GetTotalBarangayReportCount(
+
+
+
+        )
+        {
+
+            try
+            {
+
+
+
+                var totalDashboardCount = _iDashboardService.GetTotalBarangayReportCount();
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(totalDashboardCount)
+                };
+
+
+
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
     }
 }
