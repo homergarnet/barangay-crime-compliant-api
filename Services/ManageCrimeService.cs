@@ -139,7 +139,7 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.Resolution = manageCrime.Resolution;
                 manageCrimeDto.DateResolved = manageCrime.DateResolved != null ? manageCrime.DateResolved.Value : null;
                 manageCrimeDto.ResponderId = manageCrime.ResponderId;
-                manageCrimeDto.ResponderDescription = !manageCrime.ResponderDescription.Equals("null")? manageCrime.ResponderDescription:"";
+                manageCrimeDto.ResponderDescription = manageCrime.ResponderDescription != null? manageCrime.ResponderDescription:"";
                 manageCrimeDto.ResponderName = userQuery.Where(z => z.Id == manageCrime.ResponderId).Select( z=> z.FirstName + " " + z.MiddleName + " " + z.LastName).FirstOrDefault();
                 manageCrimeList.Add(manageCrimeDto);
 

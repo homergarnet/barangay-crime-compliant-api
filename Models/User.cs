@@ -10,6 +10,7 @@ namespace barangay_crime_complaint_api.Models
             Announcements = new HashSet<Announcement>();
             CrimeCompliantReportResponders = new HashSet<CrimeCompliantReport>();
             CrimeCompliantReportUsers = new HashSet<CrimeCompliantReport>();
+            PoliceInOuts = new HashSet<PoliceInOut>();
         }
 
         public long Id { get; set; }
@@ -46,5 +47,6 @@ namespace barangay_crime_complaint_api.Models
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<CrimeCompliantReport> CrimeCompliantReportResponders { get; set; }
         public virtual ICollection<CrimeCompliantReport> CrimeCompliantReportUsers { get; set; }
+        public virtual ICollection<PoliceInOut> PoliceInOuts { get; set; }
     }
 }
