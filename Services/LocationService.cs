@@ -1,5 +1,6 @@
 using barangay_crime_complaint_api.Models;
 using barangay_crime_compliant_api.DTOS;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace barangay_crime_compliant_api.Services
@@ -97,7 +98,7 @@ namespace barangay_crime_compliant_api.Services
 
             }
 
-            var locationRes = query.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var locationRes = query.Include(z => z.CrimeCompliantReport).Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             foreach(var location in locationRes)
             {
@@ -106,7 +107,7 @@ namespace barangay_crime_compliant_api.Services
                 locationDto.Id = location.Id;
                 locationDto.Lat = location.Lat;
                 locationDto.Long = location.Long;
-                locationDto.Description = location.Description;
+                locationDto.Description = location.CrimeCompliantReport.Description;
                 locationDto.DateTimeCreated = location.DateTimeCreated;
                 locationDto.DateTimeUpdated = location.DateTimeUpdated;
                 locationDto.CrimeCompliantReportId = location.CrimeCompliantReportId;

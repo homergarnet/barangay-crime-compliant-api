@@ -25,6 +25,7 @@ namespace barangay_crime_complaint_api.Models
         public virtual DbSet<PhCity> PhCities { get; set; } = null!;
         public virtual DbSet<PhProvZone> PhProvZones { get; set; } = null!;
         public virtual DbSet<PhProvince> PhProvinces { get; set; } = null!;
+        public virtual DbSet<PoliceInOut> PoliceInOuts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -32,7 +33,7 @@ namespace barangay_crime_complaint_api.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=DESKTOP-JA43BLA;Database=Thesis_Crime;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=localhost;Database=Thesis_Crime;User ID=sa;Password=123123Qq@; TrustServerCertificate=True;");
             }
         }
 
@@ -85,6 +86,8 @@ namespace barangay_crime_complaint_api.Models
 
                 entity.Property(e => e.Resolution).IsUnicode(false);
 
+                entity.Property(e => e.ResponderDescription).IsUnicode(false);
+
                 entity.Property(e => e.Status)
                     .HasMaxLength(50)
                     .IsUnicode(false);
@@ -94,8 +97,13 @@ namespace barangay_crime_complaint_api.Models
                     .HasForeignKey(d => d.CrimeCompliantId)
                     .HasConstraintName("FK_CrimeCompliantReport_CrimeCompliant");
 
+                entity.HasOne(d => d.Responder)
+                    .WithMany(p => p.CrimeCompliantReportResponders)
+                    .HasForeignKey(d => d.ResponderId)
+                    .HasConstraintName("FK_CrimeCompliantReport_Responder");
+
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.CrimeCompliantReports)
+                    .WithMany(p => p.CrimeCompliantReportUsers)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_CrimeCompliantReport_User");
             });
@@ -239,6 +247,24 @@ namespace barangay_crime_complaint_api.Models
                     .HasMaxLength(10)
                     .IsUnicode(false)
                     .HasColumnName("regionCode");
+            });
+
+            modelBuilder.Entity<PoliceInOut>(entity =>
+            {
+                entity.ToTable("PoliceInOut");
+
+                entity.Property(e => e.DateTimeCreated).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.Type)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PoliceInOuts)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_PoliceInOut_PoliceInOut_User");
             });
 
             modelBuilder.Entity<User>(entity =>

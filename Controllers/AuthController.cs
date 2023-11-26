@@ -219,6 +219,40 @@ namespace barangay_crime_compliant_api.Controllers
         }
 
         [HttpGet]
+        [Route("api/get-responder-info-list")]
+        public IActionResult GetResponderInfoList(
+            [FromQuery] string keyword, [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+
+            try
+            {
+
+                var getResponderInfoList = _iAuthService.GetResponderInfoList(keyword, page, pageSize);
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getResponderInfoList)
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [HttpGet]
         [Route("api/get-user-personal-info-by-id")]
         public IActionResult GetUserPersonalInfoById(
             [FromQuery] long id
@@ -264,6 +298,42 @@ namespace barangay_crime_compliant_api.Controllers
                 var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
 
                 var getUserPersonalInfo = _iAuthService.GetUserPersonalInfoById(userId);
+
+                return new ContentResult
+                {
+                    StatusCode = 200,
+                    ContentType = "application/json",
+                    Content = JsonSerializer.Serialize(getUserPersonalInfo)
+                };
+
+            }
+
+            catch (Exception ex)
+            {
+                return new ContentResult
+                {
+                    StatusCode = 500,
+                    ContentType = "text/html",
+                    Content = Common.GetFormattedExceptionMessage(ex)
+                };
+            }
+
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("api/is-current-responder")]
+        public IActionResult IsCurrentResponder(
+            [FromQuery] long responderId
+        )
+        {
+
+            try
+            {
+
+                var userId = Convert.ToInt64(User.FindFirst("UserId").Value);
+
+                var getUserPersonalInfo = _iAuthService.IsCurrentResponder(responderId,userId);
 
                 return new ContentResult
                 {

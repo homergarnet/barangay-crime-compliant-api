@@ -18,6 +18,7 @@ namespace barangay_crime_compliant_api.Services
         {
 
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
+            IQueryable<User> userQuery = db.Users;
             var barangayInfo = db.Users.Where(z => z.Id == userId).FirstOrDefault();
             if (userId != 0L && userType.Equals("barangay"))
             {
@@ -137,6 +138,9 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.Status = manageCrime.Status;
                 manageCrimeDto.Resolution = manageCrime.Resolution;
                 manageCrimeDto.DateResolved = manageCrime.DateResolved != null ? manageCrime.DateResolved.Value : null;
+                manageCrimeDto.ResponderId = manageCrime.ResponderId;
+                manageCrimeDto.ResponderDescription = manageCrime.ResponderDescription != null? manageCrime.ResponderDescription:"";
+                manageCrimeDto.ResponderName = userQuery.Where(z => z.Id == manageCrime.ResponderId).Select( z=> z.FirstName + " " + z.MiddleName + " " + z.LastName).FirstOrDefault();
                 manageCrimeList.Add(manageCrimeDto);
 
             }
@@ -218,13 +222,15 @@ namespace barangay_crime_compliant_api.Services
             return manageCrimeRes;
         }
 
-        public string UpdateCrimeStatus(long id, string status)
+        public string UpdateCrimeStatus(long id, long responderId, string responderDescription, string status)
         {
             var hasCrimeStatus = db.CrimeCompliantReports.Any(z => z.Id == id);
 
             if (hasCrimeStatus)
             {
                 var crimeStatus = db.CrimeCompliantReports.Where(z => z.Id == id).First();
+                crimeStatus.ResponderId = responderId;
+                crimeStatus.ResponderDescription = responderDescription;
                 crimeStatus.Status = status;
                 crimeStatus.DateTimeUpdated = DateTime.Now;
                 db.SaveChanges();

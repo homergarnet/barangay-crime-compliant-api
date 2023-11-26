@@ -295,6 +295,44 @@ namespace barangay_crime_compliant_api.Services
             return getUserPersonalInfoList;
         }
 
+        public List<UserDto> GetResponderInfoList(string keyword, int page, int pageSize)
+        {
+            IQueryable<User> query = db.Users.Where(z => z.UserType.Equals("police"));
+
+            var provinceQuery = db.PhProvinces;
+            var cityQuery = db.PhCities;
+            var barangayQuery = db.PhBrgies;
+
+            List<UserDto> getResponderInfoList = new List<UserDto>();
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(
+                    z => z.FirstName.Contains(keyword) || z.MiddleName.Contains(keyword) ||
+                    z.LastName.Contains(keyword) || z.ProvinceCodeNavigation.ProvDesc.Contains(keyword) ||
+                    z.CityCodeNavigation.CityDescription.Contains(keyword) || z.BrgyCodeNavigation.BrgyCode.Contains(keyword) ||
+                    z.BrgyCodeNavigation.BrgyName.Contains(keyword) || z.Phone.Contains(keyword)
+                );
+            }
+
+            var userPersonalInfoRes = query
+            .Include(z => z.ProvinceCodeNavigation)
+            .Include(z => z.CityCodeNavigation)
+            .Include(z => z.BrgyCodeNavigation)
+            .Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            foreach (var userPersonalInfo in userPersonalInfoRes)
+            {
+
+                var userPersonalInfoDto = new UserDto();
+                userPersonalInfoDto.id = userPersonalInfo.Id;
+                userPersonalInfoDto.name = userPersonalInfo.FirstName + " " + userPersonalInfo.MiddleName + " " + userPersonalInfo.LastName;
+                getResponderInfoList.Add(userPersonalInfoDto);
+
+            }
+
+            return getResponderInfoList;
+        }
+
         public UserDto GetUserPersonalInfoById(long id)
         {
 
@@ -341,6 +379,20 @@ namespace barangay_crime_compliant_api.Services
             }
 
             return userPersonalInfo;
+        }
+
+        public bool IsCurrentResponder(long responderId, long id)
+        {
+
+            IQueryable<User> query = db.Users;
+            var hasUserPersonalInfo = db.Users.Any(z => z.Id == id && responderId == id);
+            if (hasUserPersonalInfo)
+            {
+
+                return true;
+            }
+
+            return false;
         }
 
         public string UpdatePassword(UpdatePasswordDto updatePasswordInfo)
