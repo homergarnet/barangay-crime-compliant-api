@@ -17,6 +17,11 @@ namespace barangay_crime_compliant_api.Services
         public List<ManageCrimeDto> GetManageCrimeList(string reportType, string status, long userId, string userType, string keyword, int page, int pageSize)
         {
 
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "pending";
+            }
+
             IQueryable<CrimeCompliantReport> query = db.CrimeCompliantReports;
             IQueryable<User> userQuery = db.Users;
             var barangayInfo = db.Users.Where(z => z.Id == userId).FirstOrDefault();
@@ -120,6 +125,7 @@ namespace barangay_crime_compliant_api.Services
             foreach (var manageCrime in manageCrimeReportRes)
             {
                 DateTime dateTimeCreated = manageCrime.DateTimeCreated.Value;
+                DateTime dateTimeUpdated = manageCrime.DateTimeUpdated != null ? manageCrime.DateTimeUpdated.Value : manageCrime.DateTimeCreated.Value;
 
                 var manageCrimeDto = new ManageCrimeDto();
                 string formattedIdValue = manageCrime.Id.ToString("D3");
@@ -128,6 +134,7 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.CrimeCompliantId = manageCrime.CrimeCompliantId;
                 manageCrimeDto.Barangay = barangayQuery.Where(z => z.BrgyCode == manageCrime.User.BrgyCode).Select(z => z.BrgyName).FirstOrDefault();
                 manageCrimeDto.Date = manageCrime.DateTimeCreated.Value;
+                manageCrimeDto.DateTimeUpdated = dateTimeUpdated.ToString("yyyy-MM-dd HH:mm:ss");
                 manageCrimeDto.Time = dateTimeCreated.ToString("HH:mm:ss");
                 manageCrimeDto.Lat = locationQuery.Where(z => z.CrimeCompliantReportId == manageCrime.Id).Select(z => z.Lat).FirstOrDefault();
                 manageCrimeDto.Long = locationQuery.Where(z => z.CrimeCompliantReportId == manageCrime.Id).Select(z => z.Long).FirstOrDefault();
@@ -139,8 +146,8 @@ namespace barangay_crime_compliant_api.Services
                 manageCrimeDto.Resolution = manageCrime.Resolution;
                 manageCrimeDto.DateResolved = manageCrime.DateResolved != null ? manageCrime.DateResolved.Value : null;
                 manageCrimeDto.ResponderId = manageCrime.ResponderId;
-                manageCrimeDto.ResponderDescription = manageCrime.ResponderDescription != null? manageCrime.ResponderDescription:"";
-                manageCrimeDto.ResponderName = userQuery.Where(z => z.Id == manageCrime.ResponderId).Select( z=> z.FirstName + " " + z.MiddleName + " " + z.LastName).FirstOrDefault();
+                manageCrimeDto.ResponderDescription = manageCrime.ResponderDescription != null ? manageCrime.ResponderDescription : "";
+                manageCrimeDto.ResponderName = userQuery.Where(z => z.Id == manageCrime.ResponderId).Select(z => z.FirstName + " " + z.MiddleName + " " + z.LastName).FirstOrDefault();
                 manageCrimeList.Add(manageCrimeDto);
 
             }
