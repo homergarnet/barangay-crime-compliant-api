@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using barangay_crime_compliant_api.DTOS;
 using barangay_crime_compliant_api.Hubs;
+using System.Text.Json.Serialization;
 namespace barangay_crime_complaint_api
 {
     public class Startup
@@ -27,9 +28,11 @@ namespace barangay_crime_complaint_api
             services.AddSignalR();
             services.AddMemoryCache();
             services.AddControllers()
-            .AddNewtonsoftJson(opt =>
-                opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            .AddJsonOptions(opt =>
+			{
+                opt.JsonSerializerOptions.PropertyNamingPolicy = null; // Preserve property names
+                opt.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never; // Prevent ignoring null values
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -39,7 +42,7 @@ namespace barangay_crime_complaint_api
 
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
 
-            services.AddControllers();
+            // services.AddControllers();
 
             //SQL SERVER CONNECTION HERE
 
